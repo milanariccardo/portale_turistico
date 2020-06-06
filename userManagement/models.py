@@ -10,17 +10,17 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.user.id, filename)
 
 
-class CustomUser(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(blank=True, default='/static/img/baseAvatar.png', upload_to=user_directory_path)
-    email = models.EmailField(blank=False, unique=True)
+    email = models.EmailField(blank=False, unique=True, default='user_{0}@default.com'.format(User.pk))
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     """Metodo utilizzato per creare un CustomUser ogni volta che si crea un User sfruttando il model di django"""
     if created:
-        CustomUser.objects.create(user=instance)
+        Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)

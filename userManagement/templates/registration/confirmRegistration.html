@@ -1,0 +1,14 @@
+{% extends 'registration/baseLoginSignup.html' %}
+
+{% block title %}Registrazione{% endblock %}
+
+{% block formContent %}
+    <br>
+    <h5>La registrazione è stata effettuata con successo!</h5>
+    <br>
+    <h6>Ti abbiamo inviato un link all'email utilizzata durante la fase di registrazione. Clicca sul link presente nella
+        email ricevuta per confermare il tuo account.</h6>
+    <p>
+        <a href="{% url 'login' %}">Effettua il login</a>
+    </p>
+{% endblock %}

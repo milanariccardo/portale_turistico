@@ -1,3 +1,23 @@
-from django.shortcuts import render
+from django.contrib.auth import login
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy, reverse
+from django.utils.encoding import force_text, force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import CreateView
 
-# Create your views here.
+from userManagement.forms import SignupForm
+from userManagement.models import Profile
+
+accountActivationToken = PasswordResetTokenGenerator()
+
+'''
+class Registration(CreateView):
+    form_class = SignupForm
+    template_name = 'registration.html'
+    success_url = reverse_lazy('registrationSuccess')
+
+
+def registrationSuccess(request):
+    return render(request, '')
+'''

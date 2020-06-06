@@ -1,0 +1,15 @@
+{% extends 'registration/baseLoginSignup.html' %}
+
+
+{% block title %}Registrati{% endblock %}
+
+{% block cardTitle %}Registrati{% endblock %}
+
+{% block formContent %}
+    {% csrf_token %}
+    <br>
+    {{ form.as_p }}
+    <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
+        Registrati
+    </button>
+{% endblock %}

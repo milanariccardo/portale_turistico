@@ -1,0 +1,26 @@
+{% extends 'registration/baseLoginSignup.html' %}
+
+
+{% block title %}Login{% endblock %}
+
+{% block cardTitle %}Login{% endblock %}
+
+{% block formContent %}
+    {% csrf_token %}
+    <br>
+    {{ form.as_p }}
+
+    <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
+        Accedi
+    </button>
+
+    <div class="d-flex justify-content-around">
+        <div>
+            <a href="">Password dimenticata?</a>
+        </div>
+    </div>
+    <br>
+    <p>Non sei un membro?
+        <a href="{% url 'registration' %}">Registrati</a>
+    </p>
+{% endblock %}
