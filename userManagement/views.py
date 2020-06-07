@@ -1,4 +1,3 @@
-
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -13,6 +12,7 @@ from django.views.generic import CreateView, UpdateView
 from userManagement.forms import SignupForm, UpdateUserSettingsForm
 
 accountActivationToken = PasswordResetTokenGenerator()
+
 
 class Registration(CreateView):
     form_class = SignupForm
@@ -78,6 +78,7 @@ class UpdateUserSettings(UpdateView):
     def get_success_url(self):
         return reverse('userSettings', kwargs={'pk': self.request.user.pk})
 
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -93,3 +94,10 @@ def change_password(request):
     return render(request, 'changePassword.html', {
         'form': form
     })
+
+
+def removeAccount(request):
+    user = request.user
+    user.is_active = False
+    user.save()
+    return redirect('homepage')

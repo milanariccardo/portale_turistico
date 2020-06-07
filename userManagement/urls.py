@@ -9,6 +9,8 @@ urlpatterns = [
     path('registration/confirm/', views.confirmRegistration, name='confirmRegistration'),
     path('user_settings/<int:pk>/', UpdateUserSettings.as_view(), name='userSettings'),
     path('password/', views.change_password, name='change_password'),
+    path('remove_account/', views.removeAccount, name='removeAccount'),
+
     # Path per il reset della password
     path('reset_password/', auth_view.PasswordResetView.as_view(template_name="registration/passwordReset.html"),
          name='reset_password'),
