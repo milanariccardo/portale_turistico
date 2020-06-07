@@ -18,11 +18,11 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    """Metodo utilizzato per creare un CustomUser ogni volta che si crea un User sfruttando il model di django"""
+    """Metodo utilizzato per creare un Profle ogni volta che si crea un User sfruttando il model di django"""
     if created:
         Profile.objects.create(user=instance, email=instance.email)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    """Metodo utilizzato per salvare un CustomUser ogni volta che si salva un User creato con il model di django"""
+    """Metodo utilizzato per salvare un Profile ogni volta che si salva un User creato con il model di django"""
     instance.profile.save()
