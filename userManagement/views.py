@@ -1,5 +1,7 @@
-from django.contrib.auth import login
+
+from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import redirect, render
@@ -11,7 +13,6 @@ from django.views.generic import CreateView, UpdateView
 from userManagement.forms import SignupForm, UpdateUserSettingsForm
 
 accountActivationToken = PasswordResetTokenGenerator()
-
 
 class Registration(CreateView):
     form_class = SignupForm
@@ -76,3 +77,19 @@ class UpdateUserSettings(UpdateView):
 
     def get_success_url(self):
         return reverse('userSettings', kwargs={'pk': self.request.user.pk})
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password modificata correttamente!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Errore modifica password')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'changePassword.html', {
+        'form': form
+    })
