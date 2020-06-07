@@ -60,7 +60,7 @@
                             <img class="image-circle" width="25" height="25" src="/static/img/baseAvatar.png">
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#"><i class="fa fa-cog" aria-hidden="true"></i>
+                            <a class="dropdown-item" href="{% url 'userSettings' user.pk %}"><i class="fa fa-cog" aria-hidden="true"></i>
                                 Impostazioni</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out"

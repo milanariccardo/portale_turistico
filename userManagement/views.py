@@ -1,37 +1,17 @@
 from django.contrib.auth import login
+from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.messages.views import messages
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_text, force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
-from userManagement.forms import SignupForm
+from userManagement.forms import SignupForm, UpdateUserSettingsForm
 
 accountActivationToken = PasswordResetTokenGenerator()
 
-
-# class Registration(CreateView):
-#     form_class = SignupForm
-#     template_name = 'registration/registration.html'
-#     success_url = reverse_lazy('login')
-
-# def Registration(request):
-#     if request.method == 'POST':
-#         form = SignupForm(request.POST)
-#
-#         if form.is_valid():
-#
-#             form.save()
-#             return redirect('login')
-#
-#     else:
-#         form = SignupForm()
-#
-#     context = {'form': form,}
-#     return render(request, 'registration/registration.html', context)
 
 class Registration(CreateView):
     form_class = SignupForm
@@ -54,8 +34,6 @@ class Registration(CreateView):
         self.object.save()
 
         return response
-        # form.save()
-        # return super().form_valid(form)
 
 
 def userLoginByToken(request, user_id_b64=None, user_token=None):
@@ -86,3 +64,15 @@ def confirmRegistration(request):
     return render(request, 'registration/confirmRegistration.html')
 
 
+class UpdateUserSettings(UpdateView):
+    model = User
+    template_name = 'updateSettings.html'
+    form_class = UpdateUserSettingsForm
+
+    def form_valid(self, form):
+        response = super(UpdateUserSettings, self).form_valid(form)
+        messages.success(self.request, "Informazioni salvate correttamente")
+        return response
+
+    def get_success_url(self):
+        return reverse('userSettings', kwargs={'pk': self.request.user.pk})

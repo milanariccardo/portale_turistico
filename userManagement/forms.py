@@ -8,20 +8,6 @@ from django.forms import ModelForm
 
 from .models import Profile
 
-'''
-class CustomUserCreationForm(UserCreationForm):
-    """Classi per ampliare il model dell'user"""
-
-    class Meta(UserCreationForm.Meta):
-        model = Profile
-        fields = UserCreationForm.Meta.fields + ('avatar',)
-
-
-class CustomUserChangeForm(UserChangeForm):
-    class Meta:
-        model = Profile
-        fields = UserChangeForm.Meta.fields
-'''
 
 class SignupForm(UserCreationForm):
     """Form per la registrazione"""
@@ -45,3 +31,10 @@ class SignupForm(UserCreationForm):
             user.save()
         return user
 
+
+class UpdateUserSettingsForm(forms.ModelForm):
+    avatar = forms.ImageField()
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name',)
