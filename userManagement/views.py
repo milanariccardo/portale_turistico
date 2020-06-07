@@ -84,3 +84,5 @@ def verifyUserEmail(request, user_id_b64=None, user_token=None):
 
 def confirmRegistration(request):
     return render(request, 'registration/confirmRegistration.html')
+
+
