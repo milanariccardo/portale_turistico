@@ -37,7 +37,7 @@
                 </li>
                 {% if request.user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'insertPath' %}">Aggiungi percorso</a>
+                        <a class="nav-link" href="{% url 'showPath' %}">Gestione percorsi</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -59,7 +59,6 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-{#                            <img class="rounded-circle" width="25" height="25" src={% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}#{% endif %}>#}
                             <img class="rounded-circle" width="25" height="25" src="{{ user.profile.avatar.url }}">
 
                         </a>

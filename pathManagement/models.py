@@ -2,6 +2,7 @@ import os
 
 from django.db import models
 from multiselectfield import MultiSelectField
+from django.urls import reverse
 
 
 def user_directory_path(instance, filename):
@@ -76,3 +77,4 @@ class Path(models.Model):
     audience = MultiSelectField(choices=audienceChoices)
     audienceImage = models.ImageField(blank=False, upload_to=user_directory_path)
     path = models.ImageField(blank=False, upload_to=user_directory_path)
+

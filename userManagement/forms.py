@@ -9,7 +9,6 @@ from django.utils.translation import gettext_lazy as _
 
 from portaleTuristico.settings import MEDIA_ROOT
 
-
 from .models import Profile
 
 
@@ -61,8 +60,6 @@ class UpdateUserSettingsForm(forms.ModelForm):
         profilo.save()
         user.save()
 
-
-
     class Meta:
         model = User
         fields = ('first_name', 'last_name',)
@@ -70,4 +67,3 @@ class UpdateUserSettingsForm(forms.ModelForm):
             'first_name': _('Nome'),
             'last_name': _('Cognome'),
         }
-
