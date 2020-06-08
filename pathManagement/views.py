@@ -1,3 +1,9 @@
 from django.shortcuts import render
+from django.views.generic import CreateView
+from pathManagement.models import Path
 
-# Create your views here.
+
+class InsertPath(CreateView):
+    model = Path
+    template_name = 'insertPath.html'
+    fields = '__all__'

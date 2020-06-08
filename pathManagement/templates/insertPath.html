@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Aggiungi percorso{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="card">
+            <div class="col-md-12">
+                <br>
+                <h4>Inserisci percorso</h4>
+                <form action="" method="post">{% csrf_token %}
+                    {{ form|crispy }}
+                    <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
+                        Inserisci percorso
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

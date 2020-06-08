@@ -15,13 +15,21 @@ body {
 footer {
     position: relative;
     height: 60px;
-    left: 0;
     bottom: 0;
     width: 100%;
     background-color: gray;
     color: white;
     text-align: center;
 }
+
+/*
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+}
+ */
 
 .intro-2 {
     background: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.fanpage.it%2Fwp-content%2Fuploads%2Fsites%2F12%2F2015%2F12%2Fvacanze-in-montagna-in-veneto.jpg&f=1&nofb=1") no-repeat center center;
