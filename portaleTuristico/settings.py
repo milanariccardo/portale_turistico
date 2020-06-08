@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'userManagement.apps.UsermanagementConfig',
+    'pathManagement.apps.PathmanagementConfig',
     'crispy_forms',
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [
