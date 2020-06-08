@@ -5,13 +5,13 @@ from multiselectfield import MultiSelectField
 
 
 def user_directory_path(instance, filename):
-    """Metodo che inserisce un file nella cartella relativa all'utente, il file sarà inserito nella cartella MEDIA_ROOT/user_<id>/<filename>
-        :return user_<id>/<filename>"""
+    """Metodo che che crea la cartella e inserisce le immagini nella cartella relativa al percorso, il file sarà inserito nella cartella MEDIA_ROOT/img/static/path_<id>/<filename>
+        :return path_<id>/<filename>"""
     return os.path.join('static', 'img', 'path_{0}', '{1}').format(instance.id, filename)
 
 
 class Path(models.Model):
-    """Classe che descrive la tabella dei percorsi, con campi: id,  """
+    """Classe che descrive la tabella dei percorsi"""
 
     activityChoices = (
         ('relax', 'Relax'),

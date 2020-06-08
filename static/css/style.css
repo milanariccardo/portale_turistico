@@ -41,3 +41,7 @@ header,
 .view {
     height: 100%;
 }
+
+.asteriskField {
+    display: none;
+}

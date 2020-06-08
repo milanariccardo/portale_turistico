@@ -2,14 +2,93 @@
 {% load crispy_forms_tags %}
 {% block title %}Aggiungi percorso{% endblock %}
 
-{% block content %}
+{% block slideshow %}
     <div class="container py-4">
         <div class="card">
             <div class="col-md-12">
                 <br>
-                <h4>Inserisci percorso</h4>
-                <form action="" method="post">{% csrf_token %}
-                    {{ form|crispy }}
+                <h4><b>Inserisci percorso</b></h4>
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.id|as_crispy_field }}
+                    {{ form.activity|as_crispy_field }}
+                    <br>
+                    <p><b>Partenza e arrivo</b></p>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.start|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.end|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    <p><b>Tempi di percorrenza</b></p>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.walkTime|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.bikeTime|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    <p><b>Lunghezza percorso</b></p>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.carriageablePath|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.nonCarriageablePath|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.difficulty|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.difficultyImage|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.context|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.contextImage|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.transport|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.transportImage|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.audience|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.audienceImage|as_crispy_field }}
+                        </div>
+                    </div>
+                    <br>
+                    {{ form.path|as_crispy_field }}
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
                     <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
                         Inserisci percorso
                     </button>
