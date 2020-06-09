@@ -2,8 +2,7 @@ import os
 
 from django.db import models
 from multiselectfield import MultiSelectField
-from django.urls import reverse
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 def user_directory_path(instance, filename):
     """Metodo che che crea la cartella e inserisce le immagini nella cartella relativa al percorso, il file sarà inserito nella cartella MEDIA_ROOT/img/static/path_<id>/<filename>
@@ -59,15 +58,15 @@ class Path(models.Model):
         ('sportivi', 'Sportivi'),
     )
 
-    id = models.IntegerField(primary_key=True)
+    id = models.PositiveIntegerField(primary_key=True)
     activity = models.CharField(max_length=30, choices=activityChoices)
     start = models.CharField(max_length=30, choices=locationChoices)
     end = models.CharField(max_length=30, choices=locationChoices)
     gradient = models.IntegerField()
-    walkTime = models.IntegerField()
-    bikeTime = models.IntegerField(blank=True, default=0)
-    carriageablePath = models.FloatField(blank=True, default=0)
-    nonCarriageablePath = models.FloatField(blank=True, default=0)
+    walkTime = models.PositiveIntegerField()
+    bikeTime = models.PositiveIntegerField(blank=True, default=0)
+    carriageablePath = models.FloatField(blank=True, default=0, validators=[MinValueValidator(0)])
+    nonCarriageablePath = models.FloatField(blank=True, default=0, validators=[MinValueValidator(0)])
     difficulty = MultiSelectField(choices=difficultyChoices)
     difficultyImage = models.ImageField(blank=False, upload_to=user_directory_path)
     context = MultiSelectField(choices=contextChoices)

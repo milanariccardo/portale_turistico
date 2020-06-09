@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView
 
+from pathManagement.filters import PathFilter
 from pathManagement.forms import InsertPathForm
 from pathManagement.models import Path
 
@@ -32,3 +33,9 @@ def removePath(request, id):
     messages.success(request, "Percorso eliminato con successo")
 
     return reverse_lazy(request, 'showPath.html')
+
+
+def searchPath(request):
+    path_list = Path.objects.all()
+    path_filter = PathFilter(request.GET, queryset=path_list)
+    return render(request, 'searchPath.html', {'filter': path_filter})
