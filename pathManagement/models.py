@@ -67,6 +67,7 @@ class Path(models.Model):
     bikeTime = models.PositiveIntegerField(blank=True, default=0)
     carriageablePath = models.FloatField(blank=True, default=0, validators=[MinValueValidator(0)])
     nonCarriageablePath = models.FloatField(blank=True, default=0, validators=[MinValueValidator(0)])
+    totalKilometers = models.FloatField(editable=False, blank=True, default='0')
     difficulty = MultiSelectField(choices=difficultyChoices)
     difficultyImage = models.ImageField(blank=False, upload_to=user_directory_path)
     context = MultiSelectField(choices=contextChoices)
@@ -77,3 +78,7 @@ class Path(models.Model):
     audienceImage = models.ImageField(blank=False, upload_to=user_directory_path)
     path = models.ImageField(blank=False, upload_to=user_directory_path)
 
+
+    def save(self,  *args, **kwargs):
+        self.totalKilometers = self.carriageablePath + self.nonCarriageablePath
+        super(Path, self).save( *args, **kwargs)

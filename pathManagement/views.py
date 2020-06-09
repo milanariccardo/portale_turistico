@@ -36,6 +36,18 @@ def removePath(request, id):
 
 
 def searchPath(request):
+    km_max = request.GET.get('km_max')
+    km_min = request.GET.get('km_min')
+
     path_list = Path.objects.all()
+
+    if km_max and float(km_max) <= 0:
+        messages.error(request, "Valore di km massimo non accettato")
+        path_list = Path.objects.none()
+
+    if km_min and float(km_min) <= 0:
+        messages.error(request, "Valore di km minimo non accettato")
+        path_list = Path.objects.none()
+
     path_filter = PathFilter(request.GET, queryset=path_list)
     return render(request, 'searchPath.html', {'filter': path_filter})
