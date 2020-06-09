@@ -1,5 +1,5 @@
 import os
-
+from userManagement.models import Profile
 from django.db import models
 from multiselectfield import MultiSelectField
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -77,8 +77,19 @@ class Path(models.Model):
     audience = MultiSelectField(choices=audienceChoices)
     audienceImage = models.ImageField(blank=False, upload_to=user_directory_path)
     path = models.ImageField(blank=False, upload_to=user_directory_path)
+    cover = models.ImageField(blank=False, upload_to=user_directory_path)
 
 
     def save(self,  *args, **kwargs):
         self.totalKilometers = self.carriageablePath + self.nonCarriageablePath
         super(Path, self).save( *args, **kwargs)
+
+
+class Review(models.Model):
+    class Meta:
+        unique_together = (('path', 'user'),)
+
+    path = models.ForeignKey(Path, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    valuation = models.PositiveIntegerField()
+    comment = models.TextField()

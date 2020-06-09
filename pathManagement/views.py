@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, ListView, DeleteView
+from django.views.generic import CreateView, ListView
 
 from pathManagement.filters import PathFilter
 from pathManagement.forms import InsertPathForm
@@ -46,8 +46,13 @@ def searchPath(request):
         path_list = Path.objects.none()
 
     if km_min and float(km_min) <= 0:
-        messages.error(request, "Valore di km minimo non accettato")
+        messages.error(request, "Valore di km minimoadd icon  non accettato")
         path_list = Path.objects.none()
+
+    if km_min and km_max:
+        if float(km_min) > float(km_max):
+            messages.error(request, "Il kilometri minimi non possono essere maggiori dei kilometri massimi!")
+            path_list = Path.objects.none()
 
     path_filter = PathFilter(request.GET, queryset=path_list)
     return render(request, 'searchPath.html', {'filter': path_filter})

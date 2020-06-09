@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+<div class="notify"><span id="notifyType" class=""></span></div>
+
 {% block slideshow %}
-  <form method="get">
-    {{ filter.form|crispy }}
-       <button type="submit">Ricerca</button>
-      {% for path in filter.qs %}
-        <li>{{ path.id }} - {{ path.walkTime }} - {{ path.totalKilometers }}</li>
-      {% endfor %}
-  {% if messages %}
-      {% for message in messages %}
-          <div class="alert alert-success" role="alert">
-              {{ message }}
-          </div>
-      {% endfor %}
-  {% endif %}
+    <form method="get">
+        {{ filter.form|crispy }}
+        <button type="submit">Ricerca</button>
+        {% for path in filter.qs %}
+            <li>{{ path.id }} - {{ path.walkTime }} - {{ path.totalKilometers }}</li>
+        {% endfor %}
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

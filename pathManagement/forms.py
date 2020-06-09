@@ -26,5 +26,6 @@ class InsertPathForm(ModelForm):
             'transportImage': _('Immagine relativa ai mezzi di trasporto utilizzabili'),
             'audience': _('Utenza'),
             'audienceImage': _("Immagine relativa all'utenza"),
-            'path': _("Immagine del percorso"),
+            'path': _("Mappa del percorso"),
+            'cover': _("Foto di copertina"),
         }
