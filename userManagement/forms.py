@@ -15,6 +15,14 @@ from .models import Profile
 class SignupForm(UserCreationForm):
     """Form per la registrazione"""
     email = forms.EmailField(required=True)
+    password2 = forms.CharField(
+        label=_("Ripeti password"),
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control',
+                   'type': 'password',
+                   'required': 'true',
+                   }),
+    )
 
     class Meta:
         model = User
@@ -28,7 +36,6 @@ class SignupForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
@@ -36,7 +43,7 @@ class SignupForm(UserCreationForm):
 
 
 class UpdateUserSettingsForm(forms.ModelForm):
-    avatar = forms.ImageField(required=False)
+    avatar = forms.ImageField(required=False, label='Cambia avatar')
 
     def save(self, commit=True):
         user = super().save(commit=False)

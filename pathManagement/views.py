@@ -31,7 +31,6 @@ def removePath(request, id):
     path = Path.objects.get(id=id)
     path.delete()
     messages.success(request, "Percorso eliminato con successo")
-
     return reverse_lazy(request, 'showPath.html')
 
 

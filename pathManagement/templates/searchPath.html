@@ -4,18 +4,31 @@
 <div class="notify"><span id="notifyType" class=""></span></div>
 
 {% block slideshow %}
-    <form method="get">
-        {{ filter.form|crispy }}
-        <button type="submit">Ricerca</button>
+    <div class="container py-4">
+        <div class="card py-3">
+            <div class="col-md-12">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger py-2" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="get">
+                    {{ filter.form|crispy }}
+                    <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
+                        Ricerca
+                    </button>
+                </form>
+            </div>
+        </div>
+
         {% for path in filter.qs %}
             <li>{{ path.id }} - {{ path.walkTime }} - {{ path.totalKilometers }}</li>
         {% endfor %}
-    </form>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-danger" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+    </div>
+
+
+
 {% endblock %}

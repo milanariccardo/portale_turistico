@@ -8,14 +8,27 @@
             <div class="col-md-12">
                 <br>
                 <h4><b>Inserisci percorso</b></h4>
+                {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 <form action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.id|as_crispy_field }}
-                    {{ form.activity|as_crispy_field }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.id|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.activity|as_crispy_field }}
+                        </div>
+                    </div>
                     <br>
                     <p><b>Partenza e arrivo</b></p>
                     <div class="form-row">
-                        <div class="form-group col-md-3 mb-0">
+                        <div class="form-group col-md-6 mb-0">
                             {{ form.start|as_crispy_field }}
                         </div>
                         <div class="form-group col-md-6 mb-0">
@@ -33,16 +46,18 @@
                         </div>
                     </div>
                     <br>
-                    <p><b>Lunghezza percorso</b></p>
+                    <p><b>Informazioni percorso</b></p>
                     <div class="form-row">
-                        <div class="form-group col-md-6 mb-0">
+                        <div class="form-group col-md-4 mb-0">
                             {{ form.carriageablePath|as_crispy_field }}
                         </div>
-                        <div class="form-group col-md-6 mb-0">
+                        <div class="form-group col-md-4 mb-0">
                             {{ form.nonCarriageablePath|as_crispy_field }}
                         </div>
+                        <div class="form-group col-md-4 mb-0">
+                            {{ form.gradient|as_crispy_field }}
+                        </div>
                     </div>
-                    {{ form.gradient|as_crispy_field }}
                     <br/>
                     <div class="form-row">
                         <div class="form-group col-md-6 mb-0">
@@ -88,15 +103,6 @@
                             {{ form.cover|as_crispy_field }}
                         </div>
                     </div>
-                    <hr/>
-
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-success" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
 
                     <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
                         Inserisci percorso
