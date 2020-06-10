@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView
 
 from pathManagement.filters import PathFilter
 from pathManagement.forms import InsertPathForm
-from pathManagement.models import Path
+from pathManagement.models import Path, Review
 
 
 class InsertPath(CreateView):
@@ -54,4 +54,12 @@ def searchPath(request):
             path_list = Path.objects.none()
 
     path_filter = PathFilter(request.GET, queryset=path_list)
-    return render(request, 'searchPath.html', {'filter': path_filter})
+    review = {}
+
+    for path in path_filter.qs:
+        review[path.pk] = 0
+        val = Review.objects.filter(path=path).values('valuation')
+        iteration = val.count()
+        for i in val:
+            review[path.pk] = review[path.pk] + i['valuation'] / iteration
+    return render(request, 'searchPath.html', {'filter': path_filter, 'review': review})

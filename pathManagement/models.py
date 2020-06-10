@@ -91,5 +91,5 @@ class Review(models.Model):
 
     path = models.ForeignKey(Path, on_delete=models.CASCADE)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    valuation = models.PositiveIntegerField()
-    comment = models.TextField()
+    valuation = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    comment = models.TextField(blank=True)
