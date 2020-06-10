@@ -12,6 +12,15 @@
                 </a>
             </div>
             <p><b>Lista percorsi</b></p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <table class="table">
                 <thead class="thead-light">
                 <tr>
@@ -30,11 +39,12 @@
                         <td>{{ object.get_end_display }}</td>
                         <td>{{ object.totalKilometers }}</td>
                         <td>
-                            <a class="btn btn-warning" role="button" href=""><i class="fa fa-wrench"
-                                                                                aria-hidden="true"></i>
+                            <a class="btn btn-warning" role="button" href="{% url 'editPath' object.pk %}"><i
+                                    class="fa fa-wrench"
+                                    aria-hidden="true"></i>
                                 Modifica
                             </a>
-                            <a class="btn btn-danger" role="button" href="{% url 'removePath' object.id %}">
+                            <a class="btn btn-danger" role="button" href="{% url 'removePath' object.pk %}">
                                 <i class="fa fa-trash" aria-hidden="true"></i> Elimina
                             </a>
                         </td>

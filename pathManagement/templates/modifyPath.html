@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Aggiungi percorso{% endblock %}
+{% block title %}Modifica percorso{% endblock %}
 
 {% block slideshow %}
     <div class="container py-4">
@@ -8,16 +8,21 @@
             <div class="col-md-12">
                 <br>
 
-                <h4><b>{% block pageTitle %}Inserisci percorso{% endblock %}</b></h4>
+                <h4><b>{% block pageTitle %}Modifica percorso{% endblock %}</b></h4>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+
                 <form action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-row">
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.id|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.activity|as_crispy_field }}
-                        </div>
+                        {{ form.activity|as_crispy_field }}
                     </div>
                     <br>
                     <p><b>Partenza e arrivo</b></p>
@@ -98,8 +103,8 @@
                         </div>
                     </div>
                     {% block button %}
-                        <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
-                            Inserisci percorso
+                        <button class="btn btn-warning btn-rounded btn-block my-4 z-depth-0" type="submit">
+                            Modifica percorso
                         </button>
                     {% endblock %}
                 </form>

@@ -1,10 +1,10 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 
 from pathManagement.filters import PathFilter
-from pathManagement.forms import InsertPathForm
+from pathManagement.forms import InsertPathForm, EditPathForm
 from pathManagement.models import Path, Review
 
 
@@ -19,7 +19,21 @@ class InsertPath(CreateView):
         return response
 
     def get_success_url(self):
-        return reverse('insertPath')
+        return reverse_lazy('showPath')
+
+
+class EditPath(UpdateView):
+    model = Path
+    template_name = 'modifyPath.html'
+    form_class = EditPathForm
+
+    def form_valid(self, form):
+        response = super(EditPath, self).form_valid(form)
+        messages.success(self.request, "Informazioni modificate correttamente")
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('showPath')
 
 
 class ShowPath(ListView):
@@ -27,11 +41,11 @@ class ShowPath(ListView):
     template_name = 'showPath.html'
 
 
-def removePath(request, id):
-    path = Path.objects.get(id=id)
+def removePath(request, pk):
+    path = Path.objects.get(id=pk)
     path.delete()
     messages.success(request, "Percorso eliminato con successo")
-    return reverse_lazy(request, 'showPath.html')
+    return redirect('showPath')
 
 
 def searchPath(request):
@@ -45,7 +59,7 @@ def searchPath(request):
         path_list = Path.objects.none()
 
     if km_min and float(km_min) <= 0:
-        messages.error(request, "Valore di km minimoadd icon  non accettato")
+        messages.error(request, "Valore di km minimo non accettato")
         path_list = Path.objects.none()
 
     if km_min and km_max:
