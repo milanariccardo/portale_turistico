@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from pathManagement.models import Path
+from pathManagement.models import Path, Review
 
 
 class InsertPathForm(ModelForm):
@@ -56,3 +56,39 @@ class EditPathForm(ModelForm):
             'path': _("Mappa del percorso"),
             'cover': _("Foto di copertina"),
         }
+
+
+class InsertPathReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['comment', 'valuation']
+        labels = {
+            'comment': _('Commento'),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(InsertPathReviewForm, self).__init__(*args, **kwargs)
+        print(kwargs)
+
+    def save(self, commit=True):
+        instance = super(InsertPathReviewForm, self).save(commit=False)
+        instance.valuation = self.cleaned_data['valuation']
+        instance.comment = self.cleaned_data['comment']
+        print()
+
+        # if commit:
+        #     instance.save()
+        # return instance
+
+        pass
+
+    # def save(self, commit=True):
+    #     instance = self.save(commit=False)
+    #
+    #     path = Path.objects.filter(id = self.kwargs[1])
+    #     user = User.objects.filter(pk = self.kwargs[0])
+    #     profile = Profile.objects.filter(user = user)
+    #     instance.user = profile
+    #     instance.path = path
+    #     instance.save()
+    #     print(self.request.user())

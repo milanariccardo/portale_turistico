@@ -82,6 +82,8 @@ class Path(models.Model):
     path = models.ImageField(blank=False, upload_to=user_directory_path)
     cover = models.ImageField(blank=False, upload_to=user_directory_path)
 
+    class Meta:
+        ordering = ['id']
 
     def save(self,  *args, **kwargs):
         self.totalKilometers = self.carriageablePath + self.nonCarriageablePath
@@ -97,13 +99,9 @@ class Review(models.Model):
     valuation = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def get_profile(self):
         return Profile.objects.filter(user = self.user.id).get()
 
     def get_create_date(self):
         return self.created_at.strftime("%d/%m/%Y")
-
-    def get_update_date(self):
-        return self.updated_at.strftime("%d/%m/%Y")

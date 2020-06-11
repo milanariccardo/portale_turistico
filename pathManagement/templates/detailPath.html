@@ -80,11 +80,12 @@
                     </li>
                 </ul>
                 {% if user.is_authenticated %}
-                    <button class="btn btn-secondary" id="aggiungi_recensione" type="submit">Aggiungi recensione
-                    </button>
+                    <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
+                       href="{% url 'insertReview' user.pk object.id %}">Aggiungi recensione
+                    </a>
                     {% for comment in review %}
                         {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                            <script>document.getElementById("aggiungi_recensione").style.display="none" </script>
+                            <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
@@ -135,12 +136,9 @@
                         <p>{{ comment.get_profile.user.username }} ha scritto questa recensione
                             il {{ comment.get_create_date }}:</p>
                         <p>{{ comment.comment }}</p>
-                        {{ comment.created_at }}
-                        {{ comment.updated_at }}
-                        {% if comment.created_at !=  comment.updated_at %}
-                            <p>La recensione è stata modificata il {{ comment.get_update_date }}</p>
+                        {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                            <button class="btn btn-secondary" type="submit">Modifica recensione</button>
                         {% endif %}
-                        <button class="btn btn-secondary" type="submit">Modifica recensione</button>
                     </div>
                 </div>
             </div>

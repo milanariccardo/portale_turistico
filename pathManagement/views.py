@@ -1,11 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 
 from pathManagement.filters import PathFilter
-from pathManagement.forms import InsertPathForm, EditPathForm
+from pathManagement.forms import InsertPathForm, EditPathForm,InsertPathReviewForm
 from pathManagement.models import Path, Review
+from userManagement.models import Profile
 
 
 class InsertPath(CreateView):
@@ -82,6 +84,7 @@ class DetailPath(DetailView):
     model = Path
     template_name = 'detailPath.html'
 
+
     def get_context_data(self, *args, **kwargs):
         context = super(DetailPath, self).get_context_data()
         context['review'] = Review.objects.filter(path=self.object)
@@ -94,3 +97,22 @@ class DetailPath(DetailView):
         print(count)
         context['valuation'] = count
         return context
+
+class InsertPathReview(CreateView):
+    model = Review
+    template_name = 'insertPathReview.html'
+    form_class = InsertPathReviewForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['pk1'] = self.kwargs.get('pk1')
+        initial['pk2'] = self.kwargs.get('pk2')
+        return initial
+
+    def form_valid(self, form):
+        response = super(InsertPathReview, self).form_valid(form)
+        messages.success(self.request, "Recensione inserita correttamente")
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('homepage')

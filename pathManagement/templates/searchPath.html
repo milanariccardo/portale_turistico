@@ -47,70 +47,72 @@
                 </form>
             </div>
         </div>
-
-
         <!-- Blocco risultati -->
-        <!-- Card -->
-        <div class="card-columns py-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 py-3">
             {% for path in filter.qs %}
-                <div class="card">
-                    <img class="card-img-top" src="{{ path.cover.url }}" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Percorso {{ path.id }} - {{ path.totalKilometers }} Km</h5>
-                        <ul class="list-unstyled list-inline rating mb-0">
-                            <span id='stars-{{ path.id }}'></span>
-                            <li class="list-inline-item">
-                                <p class="text-muted">
-                                    {% for key,value in review.items %}
-                                        {% if key == path.id %}
-                                            {{ value }}
-                                            <script>
-                                                function getStars(rating) {
-                                                    // Round to nearest half
-                                                    rating = Math.round(rating * 2) / 2;
-                                                    let output = [];
+                <div class="col mb-4">
+                    <div class="card-deck">
+                        <div class="card">
+                            <img class="card-img-top" src="{{ path.cover.url }}" alt="Card image cap" width="100%"
+                                 height="170px">
+                            <div class="card-body">
+                                <p class="card-title"><b>Percorso {{ path.id }} - {{ path.totalKilometers }} Km</b></p>
+                                <ul class="list-unstyled list-inline rating mb-0">
+                                    <span id='stars-{{ path.id }}'></span>
+                                    <li class="list-inline-item">
+                                        <p class="text-muted">
+                                            {% for key,value in review.items %}
+                                                {% if key == path.id %}
+                                                    {{ value }}
+                                                    <script>
+                                                        function getStars(rating) {
+                                                            // Round to nearest half
+                                                            rating = Math.round(rating * 2) / 2;
+                                                            let output = [];
 
-                                                    // Append all the filled whole stars
-                                                    for (var i = rating; i >= 1; i--)
-                                                        output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
+                                                            // Append all the filled whole stars
+                                                            for (var i = rating; i >= 1; i--)
+                                                                output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
 
-                                                    // If there is a half a star, append it
-                                                    if (i == .5) output.push('<i class="fa fa-star-half-o amber-text" aria-hidden="true" ></i>&nbsp;');
+                                                            // If there is a half a star, append it
+                                                            if (i == .5) output.push('<i class="fa fa-star-half-o amber-text" aria-hidden="true" ></i>&nbsp;');
 
-                                                    // Fill the empty stars
-                                                    for (let i = (5 - rating); i >= 1; i--)
-                                                        output.push('<i class="fa fa-star-o amber-text" aria-hidden="true"></i>&nbsp;');
+                                                            // Fill the empty stars
+                                                            for (let i = (5 - rating); i >= 1; i--)
+                                                                output.push('<i class="fa fa-star-o amber-text" aria-hidden="true"></i>&nbsp;');
 
-                                                    return output.join('');
-                                                }
+                                                            return output.join('');
+                                                        }
 
-                                                document.getElementById("stars-{{ path.id }}").innerHTML = getStars("{{ value }}");
-                                            </script>
-                                        {% endif %}
-                                    {% endfor %}</p>
-                            </li>
-                        </ul>
-                        <p>Difficotà: {{ path.difficulty }}</p>
-                        <p>Partenza: {{ path.get_start_display }}</p>
-                        <p>Arrivo: {{ path.get_end_display }}</p>
-                        <p>Tempo a piedi:
-                            {% if path.walkTime|intdiv:60 == 0 %}
-                                {{ path.walkTime|mod:60 }} min
-                            {% else %}
-                                {{ path.walkTime|intdiv:60 }}:{{ path.walkTime|mod:60 }} h
-                            {% endif %}
-                        </p>
-                        <p>Tempo in bici:
-                            {% if path.bikeTime|intdiv:60 == 0 %}
-                                {{ path.bikeTime|mod:60 }} min
-                            {% else %}
-                                {{ path.bikeTime|intdiv:60 }}:{{ path.bikeTime|mod:60 }} h
-                            {% endif %}
-                        </p>
-                        <hr/>
-                        <button class="btn btn-secondary btn-rounded btn-block my-2 z-depth-0" type="submit">
-                            Visualizza
-                        </button>
+                                                        document.getElementById("stars-{{ path.id }}").innerHTML = getStars("{{ value }}");
+                                                    </script>
+                                                {% endif %}
+                                            {% endfor %}</p>
+                                    </li>
+                                </ul>
+                                <small>Difficotà: {{ path.difficulty }}</small><br>
+                                <small>Partenza: {{ path.get_start_display }}</small><br>
+                                <small>Arrivo: {{ path.get_end_display }}</small><br>
+                                <small>Tempo a piedi:
+                                    {% if path.walkTime|intdiv:60 == 0 %}
+                                        {{ path.walkTime|mod:60 }} min
+                                    {% else %}
+                                        {{ path.walkTime|intdiv:60 }}:{{ path.walkTime|mod:60 }} h
+                                    {% endif %}
+                                </small><br>
+                                <small>Tempo in bici:
+                                    {% if path.bikeTime|intdiv:60 == 0 %}
+                                        {{ path.bikeTime|mod:60 }} min
+                                    {% else %}
+                                        {{ path.bikeTime|intdiv:60 }}:{{ path.bikeTime|mod:60 }} h
+                                    {% endif %}
+                                </small><br>
+                                <hr/>
+                                <a class="btn btn-secondary" type="submit" role="button"
+                                   href="{% url 'detailPath' path.id %}">Visualizza
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
