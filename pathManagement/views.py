@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView
 
 from pathManagement.filters import PathFilter
 from pathManagement.forms import InsertPathForm, EditPathForm
@@ -77,3 +77,12 @@ def searchPath(request):
         for i in val:
             review[path.pk] = review[path.pk] + i['valuation'] / iteration
     return render(request, 'searchPath.html', {'filter': path_filter, 'review': review})
+
+class DetailPath(DetailView):
+    model = Path
+    template_name = 'detailPath.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetailPath, self).get_context_data()
+        context['review'] = Review.objects.filter(path=self.object)
+        return context

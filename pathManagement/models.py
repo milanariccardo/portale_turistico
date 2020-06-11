@@ -93,3 +93,6 @@ class Review(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     valuation = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     comment = models.TextField(blank=True)
+
+    def get_profile(self):
+        return Profile.objects.filter(user = self.user.id).get()

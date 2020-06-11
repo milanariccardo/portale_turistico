@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_filters',
     'crispy_forms',
     'multiselectfield',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [

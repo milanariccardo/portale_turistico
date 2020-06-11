@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load mathfilters %}
 
 {% block title %}Cerca percorso{% endblock %}
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 {% block slideshow %}
     <div class="container py-4">
         <div class="card py-3">
@@ -93,8 +93,20 @@
                         <p>Difficotà: {{ path.difficulty }}</p>
                         <p>Partenza: {{ path.get_start_display }}</p>
                         <p>Arrivo: {{ path.get_end_display }}</p>
-                        <p>Tempo in bici: {{ path.bikeTime }} minuti</p>
-                        <p>Tempo a piedi: {{ path.walkTime }} minuti</p>
+                        <p>Tempo a piedi:
+                            {% if path.walkTime|intdiv:60 == 0 %}
+                                {{ path.walkTime|mod:60 }} min
+                            {% else %}
+                                {{ path.walkTime|intdiv:60 }}:{{ path.walkTime|mod:60 }} h
+                            {% endif %}
+                        </p>
+                        <p>Tempo in bici:
+                            {% if path.bikeTime|intdiv:60 == 0 %}
+                                {{ path.bikeTime|mod:60 }} min
+                            {% else %}
+                                {{ path.bikeTime|intdiv:60 }}:{{ path.bikeTime|mod:60 }} h
+                            {% endif %}
+                        </p>
                         <hr/>
                         <button class="btn btn-secondary btn-rounded btn-block my-2 z-depth-0" type="submit">
                             Visualizza

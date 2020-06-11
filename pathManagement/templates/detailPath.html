@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load mathfilters %}
+
+{% block title %}Percorso {{ object.id }}{% endblock %}
+{% block slideshow %}
+    <div class="container py-4">
+        <div class="container py-3">
+            <div class="card">
+                <img class="card-img-top" src="{{ object.path.url }}" alt="Card image cap">
+                <div class="card-body">
+                    <p>Percorso {{ object.id }}</p>
+                    <p>{{ object.totalKilometers }} km</p>
+
+                    <p>Partenza: {{ object.get_start_display }}</p>
+                    <p>Arrivo: {{ object.get_end_display }}</p>
+
+                    <i class="fas fa-walking"></i>
+                    <p>Tempo a piedi:
+                        {% if object.walkTime|intdiv:60 == 0 %}
+                            {{ object.walkTime|mod:60 }} min
+                        {% else %}
+                            {{ object.walkTime|intdiv:60 }}:{{ object.walkTime|mod:60 }} h
+                        {% endif %}
+                    </p>
+                    <i class="fas fa-bicycle"></i>
+                    <p>Tempo in bici:
+                        {% if object.bikeTime|intdiv:60 == 0 %}
+                            {{ object.bikeTime|mod:60 }} min
+                        {% else %}
+                            {{ object.bikeTime|intdiv:60 }}:{{ object.bikeTime|mod:60 }} h
+                        {% endif %}
+                    </p>
+
+                    <i class="fas fa-road"></i>
+                    <p>Strada carrabile: {{ object.carriageablePath }} km</p>
+                    <i class="fas fa-tree"></i>
+                    <p>Strada non carrabile: {{ object.nonCarriageablePath }} km</p>
+                    <i class="fas fa-mountain"></i>
+                    <p>Pendenza: {{ object.gradient }} %</p>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for comment in review %}
+        {% if comment.comment %}
+            <div class="container py-4">
+                <div class="container py-3">
+                    <div class="card">
+                        <img class="rounded-circle" width="50" height="50" src="{{ comment.get_profile.avatar.url }}"
+                             alt="Card image cap">
+                        <ul class="list-unstyled list-inline rating mb-0">
+                            <span id='stars-{{ comment.pk }}'></span>
+                            <li class="list-inline-item">
+                                <p class="text-muted">
+                                    <script>
+                                        function getStars(rating) {
+                                            // Round to nearest half
+                                            rating = Math.round(rating * 2) / 2;
+                                            let output = [];
+
+                                            // Append all the filled whole stars
+                                            for (var i = rating; i >= 1; i--)
+                                                output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
+
+                                            // If there is a half a star, append it
+                                            if (i == .5) output.push('<i class="fa fa-star-half-o amber-text" aria-hidden="true" ></i>&nbsp;');
+
+                                            // Fill the empty stars
+                                            for (let i = (5 - rating); i >= 1; i--)
+                                                output.push('<i class="fa fa-star-o amber-text" aria-hidden="true"></i>&nbsp;');
+
+                                            return output.join('');
+                                        }
+
+                                        document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
+                                    </script>
+                                </p>
+                            </li>
+                        </ul>
+                        <p>{{ comment.get_profile.user.username }} ha scritto questa recensione:</p>
+                        <p>{{ comment.comment }}</p>
+
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
