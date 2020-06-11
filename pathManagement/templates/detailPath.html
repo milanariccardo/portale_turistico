@@ -65,7 +65,7 @@
                                         output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
 
                                     // If there is a half a star, append it
-                                    if (i == .5) output.push('<i class="fa fa-star-half-o amber-text" aria-hidden="true" ></i>&nbsp;');
+                                    if (i == .5) output.push('<i class="fas fa-star-half" aria-hidden="true" ></i>&nbsp;');
 
                                     // Fill the empty stars
                                     for (let i = (5 - rating); i >= 1; i--)
@@ -137,7 +137,9 @@
                             il {{ comment.get_create_date }}:</p>
                         <p>{{ comment.comment }}</p>
                         {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                            <button class="btn btn-secondary" type="submit">Modifica recensione</button>
+                            <a class="btn btn-secondary"  type="submit" role="button"
+                               href="{% url 'editReview' user.pk object.id %}">Modifica recensione
+                            </a>
                         {% endif %}
                     </div>
                 </div>

@@ -1,7 +1,9 @@
+from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
 from pathManagement.models import Path, Review
+from userManagement.models import Profile
 
 
 class InsertPathForm(ModelForm):
@@ -66,29 +68,55 @@ class InsertPathReviewForm(ModelForm):
             'comment': _('Commento'),
         }
 
+    pk_user = None
+    pk_path = None
+
     def __init__(self, *args, **kwargs):
         super(InsertPathReviewForm, self).__init__(*args, **kwargs)
-        print(kwargs)
+        self.pk_user = kwargs.get('initial').get('pk1')
+        self.pk_path = kwargs.get('initial').get('pk2')
 
     def save(self, commit=True):
         instance = super(InsertPathReviewForm, self).save(commit=False)
         instance.valuation = self.cleaned_data['valuation']
         instance.comment = self.cleaned_data['comment']
-        print()
 
-        # if commit:
-        #     instance.save()
-        # return instance
+        path = Path.objects.filter(id = self.pk_path).last()
+        user = User.objects.filter(pk = self.pk_user).last()
+        profile = Profile.objects.filter(user = user).last()
 
-        pass
+        print(path)
+        print(profile)
+        #
+        instance.path = path
+        instance.user = profile
+
+        if commit:
+            instance.save()
+        return instance
+
+class EditPathReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['valuation', 'comment']
 
     # def save(self, commit=True):
-    #     instance = self.save(commit=False)
+    #     pass
+    # def save(self, commit=True):
+    #     instance = super(EditPathReviewForm, self).save(commit=False)
+    #     instance.valuation = self.cleaned_data['valuation']
+    #     instance.comment = self.cleaned_data['comment']
     #
-    #     path = Path.objects.filter(id = self.kwargs[1])
-    #     user = User.objects.filter(pk = self.kwargs[0])
-    #     profile = Profile.objects.filter(user = user)
-    #     instance.user = profile
+    #     path = Path.objects.filter(id = self.pk_path).last()
+    #     user = User.objects.filter(pk = self.pk_user).last()
+    #     profile = Profile.objects.filter(user = user).last()
+    #
+    #     print(path)
+    #     print(profile)
+    #     #
     #     instance.path = path
-    #     instance.save()
-    #     print(self.request.user())
+    #     instance.user = profile
+    #
+    #     if commit:
+    #         instance.save()
+    #     return instance

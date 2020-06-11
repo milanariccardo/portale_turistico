@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 
 from pathManagement.filters import PathFilter
-from pathManagement.forms import InsertPathForm, EditPathForm,InsertPathReviewForm
+from pathManagement.forms import InsertPathForm, EditPathForm, InsertPathReviewForm, EditPathReviewForm
 from pathManagement.models import Path, Review
 from userManagement.models import Profile
 
@@ -115,4 +115,28 @@ class InsertPathReview(CreateView):
         return response
 
     def get_success_url(self):
-        return reverse_lazy('homepage')
+        return reverse_lazy('searchPath')
+
+
+class EditPathReview(UpdateView):
+    model = Review
+    template_name = 'insertPathReview.html'
+    form_class = EditPathReviewForm
+
+    def get_object(self, queryset=None):
+        pk_user = self.kwargs.get('pk1')
+        pk_path = self.kwargs.get('pk2')
+        path = Path.objects.filter(id=pk_path).last()
+        user = User.objects.filter(pk=pk_user).last()
+        profile = Profile.objects.filter(user=user).last()
+        print(Review.objects.filter(user=profile, path=path))
+        return Review.objects.filter(user=profile, path=path).last()
+
+
+    def form_valid(self, form):
+        response = super(EditPathReview, self).form_valid(form)
+        messages.success(self.request, "Informazioni modificate correttamente")
+        return response
+
+    def get_success_url(self):
+        return reverse_lazy('searchPath')
