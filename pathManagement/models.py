@@ -1,4 +1,7 @@
 import os
+
+from django.contrib.auth.models import User
+
 from userManagement.models import Profile
 from django.db import models
 from multiselectfield import MultiSelectField
@@ -93,6 +96,14 @@ class Review(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     valuation = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def get_profile(self):
         return Profile.objects.filter(user = self.user.id).get()
+
+    def get_create_date(self):
+        return self.created_at.strftime("%d/%m/%Y")
+
+    def get_update_date(self):
+        return self.updated_at.strftime("%d/%m/%Y")

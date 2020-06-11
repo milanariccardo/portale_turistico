@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load mathfilters %}
 
+<!-- Informazioni sul percorso -->
+
 {% block title %}Percorso {{ object.id }}{% endblock %}
 {% block slideshow %}
     <div class="container py-4">
@@ -42,12 +44,64 @@
             </div>
         </div>
     </div>
+
+    <!-- Media delle recensioni -->
+
+    <div class="container py-4">
+        <div class="container py-3">
+            <div class="card">
+                <ul class="list-unstyled list-inline rating mb-0">
+                    <span id='stars-average'></span>
+                    <li class="list-inline-item">
+                        <p class="text-muted">
+                            <script>
+                                function getStars(rating) {
+                                    // Round to nearest half
+                                    rating = Math.round(rating * 2) / 2;
+                                    let output = [];
+
+                                    // Append all the filled whole stars
+                                    for (var i = rating; i >= 1; i--)
+                                        output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
+
+                                    // If there is a half a star, append it
+                                    if (i == .5) output.push('<i class="fa fa-star-half-o amber-text" aria-hidden="true" ></i>&nbsp;');
+
+                                    // Fill the empty stars
+                                    for (let i = (5 - rating); i >= 1; i--)
+                                        output.push('<i class="fa fa-star-o amber-text" aria-hidden="true"></i>&nbsp;');
+
+                                    return output.join('');
+                                }
+
+                                document.getElementById("stars-average").innerHTML = getStars("{{valuation}}");
+                            </script>
+                        </p>
+                    </li>
+                </ul>
+                {% if user.is_authenticated %}
+                    <button class="btn btn-secondary" id="aggiungi_recensione" type="submit">Aggiungi recensione
+                    </button>
+                    {% for comment in review %}
+                        {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                            <script>document.getElementById("aggiungi_recensione").style.display="none" </script>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Recensioni -->
+
     {% for comment in review %}
         {% if comment.comment %}
             <div class="container py-4">
                 <div class="container py-3">
                     <div class="card">
-                        <img class="rounded-circle" width="50" height="50" src="{{ comment.get_profile.avatar.url }}"
+                        <img class="rounded-circle" width="50" height="50"
+                             src="{{ comment.get_profile.avatar.url }}"
                              alt="Card image cap">
                         <ul class="list-unstyled list-inline rating mb-0">
                             <span id='stars-{{ comment.pk }}'></span>
@@ -78,10 +132,15 @@
                                 </p>
                             </li>
                         </ul>
-                        <p>{{ comment.get_profile.user.username }} ha scritto questa recensione:</p>
+                        <p>{{ comment.get_profile.user.username }} ha scritto questa recensione
+                            il {{ comment.get_create_date }}:</p>
                         <p>{{ comment.comment }}</p>
-
-
+                        {{ comment.created_at }}
+                        {{ comment.updated_at }}
+                        {% if comment.created_at !=  comment.updated_at %}
+                            <p>La recensione è stata modificata il {{ comment.get_update_date }}</p>
+                        {% endif %}
+                        <button class="btn btn-secondary" type="submit">Modifica recensione</button>
                     </div>
                 </div>
             </div>

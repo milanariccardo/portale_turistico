@@ -85,4 +85,12 @@ class DetailPath(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(DetailPath, self).get_context_data()
         context['review'] = Review.objects.filter(path=self.object)
+        path_review = Review.objects.filter(path=self.object.id).values('valuation')
+        iteration = path_review.count()
+        count = 0
+        for value in path_review:
+            print(value['valuation'])
+            count = count + value['valuation'] / iteration
+        print(count)
+        context['valuation'] = count
         return context
