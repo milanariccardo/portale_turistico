@@ -7,10 +7,15 @@ from django.db import models
 from multiselectfield import MultiSelectField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 def user_directory_path(instance, filename):
     """Metodo che che crea la cartella e inserisce le immagini nella cartella relativa al percorso, il file sarà inserito nella cartella MEDIA_ROOT/img/static/path_<id>/<filename>
         :return path_<id>/<filename>"""
     return os.path.join('static', 'img', 'path_{0}', '{1}').format(instance.id, filename)
+
+
+def user_review_directory_path(instance, filename):
+    return 'user_{0}/{1}'.format(instance.review.user.id, filename)
 
 
 class Path(models.Model):
@@ -85,9 +90,9 @@ class Path(models.Model):
     class Meta:
         ordering = ['id']
 
-    def save(self,  *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.totalKilometers = self.carriageablePath + self.nonCarriageablePath
-        super(Path, self).save( *args, **kwargs)
+        super(Path, self).save(*args, **kwargs)
 
 
 class Review(models.Model):
@@ -97,11 +102,17 @@ class Review(models.Model):
     path = models.ForeignKey(Path, on_delete=models.CASCADE)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     valuation = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    title = models.CharField(blank=False, max_length=255)
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_profile(self):
-        return Profile.objects.filter(user = self.user.id).get()
+        return Profile.objects.filter(user=self.user.id).get()
 
     def get_create_date(self):
         return self.created_at.strftime("%d/%m/%Y")
+
+
+class ListPhoto(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    photo = models.ImageField(blank=True, upload_to=user_review_directory_path)

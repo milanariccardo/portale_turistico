@@ -6,7 +6,7 @@ from django.views.generic import CreateView, ListView, UpdateView, DetailView
 
 from pathManagement.filters import PathFilter
 from pathManagement.forms import InsertPathForm, EditPathForm, InsertPathReviewForm, EditPathReviewForm
-from pathManagement.models import Path, Review
+from pathManagement.models import Path, Review, ListPhoto
 from userManagement.models import Profile
 
 
@@ -76,27 +76,32 @@ def searchPath(request):
         review[path.pk] = 0
         val = Review.objects.filter(path=path).values('valuation')
         iteration = val.count()
+
         for i in val:
             review[path.pk] = review[path.pk] + i['valuation'] / iteration
-    return render(request, 'searchPath.html', {'filter': path_filter, 'review': review})
+    return render(request, 'searchPath.html', {'filter': path_filter, 'review': review, 'num_review': iteration})
+
 
 class DetailPath(DetailView):
     model = Path
     template_name = 'detailPath.html'
 
-
     def get_context_data(self, *args, **kwargs):
         context = super(DetailPath, self).get_context_data()
         context['review'] = Review.objects.filter(path=self.object)
+
+        dict = {}
+        for image in context['review']:
+            dict[image] = ListPhoto.objects.filter(review=image)
+        context['list_photo'] = dict
         path_review = Review.objects.filter(path=self.object.id).values('valuation')
         iteration = path_review.count()
         count = 0
         for value in path_review:
-            print(value['valuation'])
             count = count + value['valuation'] / iteration
-        print(count)
         context['valuation'] = count
         return context
+
 
 class InsertPathReview(CreateView):
     model = Review
@@ -129,9 +134,8 @@ class EditPathReview(UpdateView):
         path = Path.objects.filter(id=pk_path).last()
         user = User.objects.filter(pk=pk_user).last()
         profile = Profile.objects.filter(user=user).last()
-        print(Review.objects.filter(user=profile, path=path))
-        return Review.objects.filter(user=profile, path=path).last()
 
+        return Review.objects.filter(user=profile, path=path).last()
 
     def form_valid(self, form):
         response = super(EditPathReview, self).form_valid(form)
@@ -139,4 +143,4 @@ class EditPathReview(UpdateView):
         return response
 
     def get_success_url(self):
-        return reverse_lazy('searchPath')
+        return reverse_lazy('detailPath', kwargs={'pk': self.kwargs.get('pk2')})

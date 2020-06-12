@@ -39,14 +39,15 @@
                             {{ filter.form.km_max|as_crispy_field }}
                         </div>
                     </div>
-
-
                     <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
                         Ricerca
                     </button>
                 </form>
             </div>
         </div>
+
+
+
         <!-- Blocco risultati -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 py-3">
             {% for path in filter.qs %}
@@ -60,16 +61,15 @@
                                 <ul class="list-unstyled list-inline rating mb-0">
                                     <span id='stars-{{ path.id }}'></span>
                                     <li class="list-inline-item">
-                                        <p class="text-muted">
                                             {% for key,value in review.items %}
                                                 {% if key == path.id %}
-                                                    {{ value }}
                                                     <script src="/static/javascript/drawStar.js"></script>
                                                     <script>
                                                         document.getElementById("stars-{{ path.id }}").innerHTML = getStars("{{ value }}");
                                                     </script>
+                                                    {{ value|floatformat:1 }} ({{ num_review }})
                                                 {% endif %}
-                                            {% endfor %}</p>
+                                            {% endfor %}
                                     </li>
                                 </ul>
                                 <small>Difficotà: {{ path.difficulty }}</small><br>
