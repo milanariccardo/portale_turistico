@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load mathfilters %}
 
+
 <!-- Informazioni sul percorso -->
 
 {% block title %}Percorso {{ object.id }}{% endblock %}
@@ -54,26 +55,8 @@
                     <span id='stars-average'></span>
                     <li class="list-inline-item">
                         <p class="text-muted">
+                            <script src="/static/javascript/drawStar.js"></script>
                             <script>
-                                function getStars(rating) {
-                                    // Round to nearest half
-                                    rating = Math.round(rating * 2) / 2;
-                                    let output = [];
-
-                                    // Append all the filled whole stars
-                                    for (var i = rating; i >= 1; i--)
-                                        output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
-
-                                    // If there is a half a star, append it
-                                    if (i == .5) output.push('<i class="fas fa-star-half" aria-hidden="true" ></i>&nbsp;');
-
-                                    // Fill the empty stars
-                                    for (let i = (5 - rating); i >= 1; i--)
-                                        output.push('<i class="fa fa-star-o amber-text" aria-hidden="true"></i>&nbsp;');
-
-                                    return output.join('');
-                                }
-
                                 document.getElementById("stars-average").innerHTML = getStars("{{valuation}}");
                             </script>
                         </p>
@@ -108,26 +91,8 @@
                             <span id='stars-{{ comment.pk }}'></span>
                             <li class="list-inline-item">
                                 <p class="text-muted">
+                                    <script src="/static/javascript/drawStar.js"></script>
                                     <script>
-                                        function getStars(rating) {
-                                            // Round to nearest half
-                                            rating = Math.round(rating * 2) / 2;
-                                            let output = [];
-
-                                            // Append all the filled whole stars
-                                            for (var i = rating; i >= 1; i--)
-                                                output.push('<i class="fa fa-star amber-text" aria-hidden="true" ></i>&nbsp;');
-
-                                            // If there is a half a star, append it
-                                            if (i == .5) output.push('<i class="fa fa-star-half-o amber-text" aria-hidden="true" ></i>&nbsp;');
-
-                                            // Fill the empty stars
-                                            for (let i = (5 - rating); i >= 1; i--)
-                                                output.push('<i class="fa fa-star-o amber-text" aria-hidden="true"></i>&nbsp;');
-
-                                            return output.join('');
-                                        }
-
                                         document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
                                     </script>
                                 </p>
@@ -137,7 +102,7 @@
                             il {{ comment.get_create_date }}:</p>
                         <p>{{ comment.comment }}</p>
                         {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                            <a class="btn btn-secondary"  type="submit" role="button"
+                            <a class="btn btn-secondary" type="submit" role="button"
                                href="{% url 'editReview' user.pk object.id %}">Modifica recensione
                             </a>
                         {% endif %}
@@ -146,4 +111,7 @@
             </div>
         {% endif %}
     {% endfor %}
+{% endblock %}
+
+{% block javascript %}
 {% endblock %}
