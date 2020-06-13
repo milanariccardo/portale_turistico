@@ -4,9 +4,22 @@
 {% block title %}Inserisci recensione{% endblock %}
 
 {% block slideshow %}
-    <h1>Recensione</h1>
-    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Inserisci"/>
-    </form>
+    <div class="container py-3">
+        <div class="card py-2">
+            <div class="col-md-12">
+                <h5>Inserisci una recensione</h5>
+                <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                    {{ form.title|as_crispy_field }}
+                    {{ form.valuation|as_crispy_field }}
+                    {{ form.comment|as_crispy_field }}
+                    {{ form.image|as_crispy_field }}
+
+                    <button class="btn btn-secondary btn-rounded my-2 z-depth-0" type="submit">
+                        Inserisci recensione
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

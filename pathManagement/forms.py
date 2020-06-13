@@ -46,14 +46,16 @@ class EditPathForm(ModelForm):
 
 
 class InsertPathReviewForm(ModelForm):
-    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(required=False, label='Inserisci immagine',widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     class Meta:
         model = Review
         fields = ['title', 'comment', 'valuation', ]
         labels = {
             'comment': _('Commento'),
+            'valuation': _('Valutazione'),
             'title': _('Inserisci un titolo'),
+
         }
 
     pk_user = None
@@ -81,8 +83,13 @@ class InsertPathReviewForm(ModelForm):
 
 
 class EditPathReviewForm(ModelForm):
-    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(required=False, label='Inserisci immagine', widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     class Meta:
         model = Review
         fields = ['title', 'valuation', 'comment']
+        labels = {
+            'comment': _('Commento'),
+            'valuation': _('Valutazione'),
+            'title': _('Inserisci un titolo'),
+        }
