@@ -66,13 +66,12 @@ def searchPath(request):
 
     if km_min and km_max:
         if float(km_min) > float(km_max):
-            messages.error(request, "Il kilometri minimi non possono essere maggiori dei kilometri massimi!")
+            messages.error(request, "I kilometri minimi non possono essere maggiori dei kilometri massimi!")
             path_list = Path.objects.none()
 
     path_filter = PathFilter(request.GET, queryset=path_list)
     dict_num_review = {}
     review = {}
-
 
     for path in path_filter.qs:
         review[path.pk] = 0
@@ -82,8 +81,6 @@ def searchPath(request):
 
         for i in val:
             review[path.pk] = review[path.pk] + i['valuation'] / iteration
-
-    print(dict_num_review)
 
     return render(request, 'searchPath.html', {'filter': path_filter, 'review': review, 'num_review': dict_num_review})
 
@@ -125,23 +122,60 @@ class InsertPathReview(CreateView):
         messages.success(self.request, "Recensione inserita correttamente")
         return response
 
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('image')
+        instance = form.save()
+
+        if form.is_valid():
+            for f in files:
+                ListPhoto.objects.create(review=instance, photo=f)
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
     def get_success_url(self):
         return reverse_lazy('searchPath')
 
 
+## Funzione che ritorna la review di una coppia (path.id, utente.id)
+def return_review(pk_path, pk_user):
+    path = Path.objects.filter(id=pk_path).last()
+    user = User.objects.filter(pk=pk_user).last()
+    profile = Profile.objects.filter(user=user).last()
+    return Review.objects.filter(user=profile, path=path).last()
+
+
 class EditPathReview(UpdateView):
     model = Review
-    template_name = 'insertPathReview.html'
+    template_name = 'editPathReview.html'
     form_class = EditPathReviewForm
 
     def get_object(self, queryset=None):
-        pk_user = self.kwargs.get('pk1')
-        pk_path = self.kwargs.get('pk2')
-        path = Path.objects.filter(id=pk_path).last()
-        user = User.objects.filter(pk=pk_user).last()
-        profile = Profile.objects.filter(user=user).last()
+        return return_review(self.kwargs.get('pk2'), self.kwargs.get('pk1'))
 
-        return Review.objects.filter(user=profile, path=path).last()
+    def get_context_data(self, **kwargs):
+        context = super(EditPathReview, self).get_context_data()
+        review = return_review(self.kwargs.get('pk2'), self.kwargs.get('pk1'))
+        image = ListPhoto.objects.filter(review=review)
+        context['image'] = image
+        context['pk_user'] = self.kwargs.get('pk1')
+        context['pk_path'] = self.kwargs.get('pk2')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        super(EditPathReview, self).post(request, **kwargs)
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('image')
+        review = return_review(self.kwargs.get('pk2'), self.kwargs.get('pk1'))
+        if form.is_valid():
+            for f in files:
+                ListPhoto.objects.create(review=review, photo=f)
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
     def form_valid(self, form):
         response = super(EditPathReview, self).form_valid(form)
@@ -150,3 +184,13 @@ class EditPathReview(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('detailPath', kwargs={'pk': self.kwargs.get('pk2')})
+
+
+def delete_image_review(request, **kwargs):
+    print(kwargs['pk'])
+    image = ListPhoto.objects.get(pk=kwargs['pk'])
+    image.delete()
+    messages.success(request, "Rimozione effettuata correttamente")
+    print(kwargs['pk1'])
+    print(kwargs['pk2'])
+    return redirect(reverse('editReview', kwargs={'pk1': kwargs['pk1'], 'pk2': kwargs['pk2']}))

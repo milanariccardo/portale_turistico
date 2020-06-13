@@ -105,81 +105,109 @@
         {% endif %}
     </div>
 
+    <div class="container py-3">
+        <canvas id="valuationChart" width="1000" height="400"></canvas>
+    </div>
 
     <!-- Recensioni -->
     <div class="container py-3">
         <h4>Recensioni</h4>
 
-            {% for comment in review %}
-                <div class="py-2">
-                    {% if comment.comment %}
-                        <div class="card">
-                            <div class="col-md-12">
-                                <div class="row py-2 px-3">
-                                    <img class="rounded-circle" width="50" height="50"
-                                         src="{{ comment.get_profile.avatar.url }}"
-                                         alt="Card image cap">
-                                    <div class="col">
-                                        <ul class="list-unstyled list-inline rating mb-0">
-                                            <span id='stars-{{ comment.pk }}'></span>
-                                            <li class="list-inline-item">
-                                                <p class="text-muted">
-                                                    <script src="/static/javascript/drawStar.js"></script>
-                                                    <script>
-                                                        document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
-                                                    </script>
-                                                </p>
-                                            </li>
-                                        </ul>
-                                        <small>{{ comment.get_profile.user.username }} ha scritto questa
-                                            recensione
-                                            il {{ comment.get_create_date }}</small>
-                                    </div>
+        {% for comment in review %}
+            <div class="py-2">
+                {% if comment.comment %}
+                    <div class="card">
+                        <div class="col-md-12">
+                            <div class="row py-2 px-3">
+                                <img class="rounded-circle" width="50" height="50"
+                                     src="{{ comment.get_profile.avatar.url }}"
+                                     alt="Card image cap">
+                                <div class="col">
+                                    <ul class="list-unstyled list-inline rating mb-0">
+                                        <span id='stars-{{ comment.pk }}'></span>
+                                        <li class="list-inline-item">
+                                            <p class="text-muted">
+                                                <script src="/static/javascript/drawStar.js"></script>
+                                                <script>
+                                                    document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
+                                                </script>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <small>{{ comment.get_profile.user.username }} ha scritto questa
+                                        recensione
+                                        il {{ comment.get_create_date }}</small>
                                 </div>
-                                <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
-                                {% for key,value in list_photo.items %}
-                                    {% if key == comment %}
-                                        {% if value %}
-                                            {% for image in value %}
-                                                <!-- Image trigger modal -->
-                                                <img alt="picture"
-                                                     src="{{ image.photo.url }}"
-                                                     class="img-fluid" width="100" height="100" data-toggle="modal"
-                                                     data-target="#myModal-{{ image.pk }}" style="cursor: pointer">
+                            </div>
+                            <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
+                            {% for key,value in list_photo.items %}
+                                {% if key == comment %}
+                                    {% if value %}
+                                        {% for image in value %}
+                                            <!-- Image trigger modal -->
+                                            <img alt="picture"
+                                                 src="{{ image.photo.url }}"
+                                                 class="img-fluid" width="100" height="100" data-toggle="modal"
+                                                 data-target="#myModal-{{ image.pk }}" style="cursor: pointer">
 
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="myModal-{{ image.pk }}" tabindex="-1"
-                                                     role="dialog"
-                                                     aria-labelledby="ModalCenterTitle" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-body">
-                                                                <img alt="picture"
-                                                                     src="{{ image.photo.url }}"
-                                                                     class="img-fluid">
-                                                            </div>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="myModal-{{ image.pk }}" tabindex="-1"
+                                                 role="dialog"
+                                                 aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body">
+                                                            <img alt="picture"
+                                                                 src="{{ image.photo.url }}"
+                                                                 class="img-fluid">
                                                         </div>
                                                     </div>
                                                 </div>
-                                            {% endfor %}
-                                        {% endif %}
+                                            </div>
+                                        {% endfor %}
                                     {% endif %}
-                                {% endfor %}
+                                {% endif %}
+                            {% endfor %}
 
-                                <div class="row py-2 px-3">
-                                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                                        <a class="btn btn-secondary" type="submit" role="button"
-                                           href="{% url 'editReview' user.pk object.id %}">
-                                            <i class="fas fa-edit"></i> Modifica recensione
-                                        </a>
-                                    {% endif %}
-                                </div>
+                            <div class="row py-2 px-3">
+                                {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                                    <a class="btn btn-secondary" type="submit" role="button"
+                                       href="{% url 'editReview' user.pk object.id %}">
+                                        <i class="fas fa-edit"></i> Modifica recensione
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
+                    </div>
 
-                    {% endif %}
-                </div>
-            {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
 
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        new Chart(document.getElementById("valuationChart"), {
+            type: 'horizontalBar',
+            data: {
+                labels: ["5 stelle", "4 stelle", "3 stelle", "2 stelle", "1 stella"],
+                datasets: [
+                    {
+                        label: "Voti",
+                        backgroundColor: [],
+                        data: [2478, 5267, 734, 784, 433]
+                    }
+                ]
+            },
+            options: {
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: 'Predicted world population (millions) in 2050'
+                }
+            }
+        });
+    </script>
 {% endblock %}

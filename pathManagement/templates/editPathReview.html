@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Modifica recensione{% endblock %}
+
+{% block slideshow %}
+   <h1>Recensione</h1>
+   <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+       {{ form|crispy }}
+       <input type="submit" value="Inserisci"/>
+   </form>
+   <h3>Clicca sull'immagine da eliminare</h3>
+   {% for imm in image %}
+               <img src="{{ imm.photo.url }}" height="100" width="100">
+               <a href="{% url 'deleteImageReview' pk_user pk_path imm.pk %}" class="btn btn-secondary" type="submit"
+                  role="button" style="justify-content: right"> <i class="fas fa-trash"></i>
+               </a>
+       <br>
+   {% endfor %}
+{% endblock %}

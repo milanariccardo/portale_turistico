@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from pathManagement.views import InsertPath, ShowPath, EditPath, DetailPath, InsertPathReview, EditPathReview
+from pathManagement.views import InsertPath, ShowPath, EditPath, DetailPath, InsertPathReview, EditPathReview, \
+    delete_image_review
 from .views import removePath, searchPath
 
 urlpatterns = [
@@ -12,6 +13,6 @@ urlpatterns = [
     path('search/', searchPath, name='searchPath'),
     path('detail/<int:pk>/', DetailPath.as_view(), name='detailPath'),
     path('review/<int:pk1>-<int:pk2>/', InsertPathReview.as_view(), name='insertReview'),
-    path('edit_review/<int:pk1>-<int:pk2>/', EditPathReview.as_view(), name='editReview')
-
+    path('edit_review/<int:pk1>-<int:pk2>/', EditPathReview.as_view(), name='editReview'),
+    path('edit_review/<int:pk1>-<int:pk2>/remove/<int:pk>/', delete_image_review, name='deleteImageReview'),
 ]

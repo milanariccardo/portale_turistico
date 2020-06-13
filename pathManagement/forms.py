@@ -46,7 +46,7 @@ class EditPathForm(ModelForm):
 
 
 class InsertPathReviewForm(ModelForm):
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     class Meta:
         model = Review
@@ -77,12 +77,12 @@ class InsertPathReviewForm(ModelForm):
 
         if commit:
             instance.save()
-            if (self.cleaned_data['image']):
-                photo_path = ListPhoto.objects.create(review=instance, photo=self.cleaned_data['image'])
         return instance
 
 
 class EditPathReviewForm(ModelForm):
+    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
     class Meta:
         model = Review
         fields = ['title', 'valuation', 'comment']
