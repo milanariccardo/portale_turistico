@@ -7,7 +7,6 @@
         <div class="card">
             <div class="col-md-12">
                 <br>
-
                 <h4><b>{% block pageTitle %}Modifica percorso{% endblock %}</b></h4>
 
                 {% if messages %}
@@ -18,13 +17,13 @@
                     {% endfor %}
                 {% endif %}
 
-
                 <form action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-row">
-                        {{ form.activity|as_crispy_field }}
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.activity|as_crispy_field }}
+                        </div>
                     </div>
-                    <br>
                     <p><b>Partenza e arrivo</b></p>
                     <div class="form-row">
                         <div class="form-group col-md-6 mb-0">

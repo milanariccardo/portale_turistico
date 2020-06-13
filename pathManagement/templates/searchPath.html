@@ -39,17 +39,28 @@
                             {{ filter.form.km_max|as_crispy_field }}
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-rounded btn-block my-4 z-depth-0" type="submit">
+                    <button class="btn btn-secondary btn-rounded btn-block z-depth-0" type="submit">
                         Ricerca
                     </button>
                 </form>
             </div>
         </div>
 
-
+        <div class="dropdown pt-2 flex-right">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Ordina per
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#" id="sortLenghtIncrease">Lunghezza percorso crescente</a>
+                <a class="dropdown-item" href="#">Lunghezza percorso decrescente</a>
+                <a class="dropdown-item" href="#">Tempo a piedi crescente</a>
+                <a class="dropdown-item" href="#">Tempo a piedi decrescente</a>
+            </div>
+        </div>
 
         <!-- Blocco risultati -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 py-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 py-2">
             {% for path in filter.qs %}
                 <div class="col mb-4">
                     <div class="card-deck">
@@ -61,28 +72,33 @@
                                 <ul class="list-unstyled list-inline rating mb-0">
                                     <span id='stars-{{ path.id }}'></span>
                                     <li class="list-inline-item">
-                                            {% for key,value in review.items %}
-                                                {% if key == path.id %}
-                                                    <script src="/static/javascript/drawStar.js"></script>
-                                                    <script>
-                                                        document.getElementById("stars-{{ path.id }}").innerHTML = getStars("{{ value }}");
-                                                    </script>
-                                                    {{ value|floatformat:1 }} ({{ num_review }})
-                                                {% endif %}
-                                            {% endfor %}
+                                        {% for key,value in review.items %}
+                                            {% if key == path.id %}
+                                                <script src="/static/javascript/drawStar.js"></script>
+                                                <script>
+                                                    document.getElementById("stars-{{ path.id }}").innerHTML = getStars("{{ value }}");
+                                                </script>
+                                                {% for num_path, num in num_review.items %}
+                                                    {% if num_path == path.id%}
+                                                        {{ value|floatformat:1 }} ({{ num }})
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
                                     </li>
                                 </ul>
-                                <small>Difficotà: {{ path.difficulty }}</small><br>
-                                <small>Partenza: {{ path.get_start_display }}</small><br>
-                                <small>Arrivo: {{ path.get_end_display }}</small><br>
-                                <small>Tempo a piedi:
+                                <small>
+                                    Difficotà: {{ path.difficulty }}<br>
+                                    Partenza: {{ path.get_start_display }}<br>
+                                    Arrivo: {{ path.get_end_display }}<br>
+                                    Tempo a piedi:
                                     {% if path.walkTime|intdiv:60 == 0 %}
                                         {{ path.walkTime|mod:60 }} min
                                     {% else %}
                                         {{ path.walkTime|intdiv:60 }}:{{ path.walkTime|mod:60 }} h
                                     {% endif %}
-                                </small><br>
-                                <small>Tempo in bici:
+                                    <br>
+                                    Tempo in bici:
                                     {% if path.bikeTime|intdiv:60 == 0 %}
                                         {{ path.bikeTime|mod:60 }} min
                                     {% else %}

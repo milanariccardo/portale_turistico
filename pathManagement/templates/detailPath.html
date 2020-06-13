@@ -6,119 +6,180 @@
 {% block title %}Percorso {{ object.id }}{% endblock %}
 
 {% block slideshow %}
-<div class="container py-3">
-    {% for message in messages %}
-    <div class="alert alert-success py-2" role="alert">
-        {{ message }}
-    </div>
-    {% endfor %}
-    <div class="card">
-        <img class="card-img-top" src="{{ object.path.url }}" alt="Card image cap" width="100%">
-        <div class="card-body">
-            <h5>Percorso {{ object.id }} - {{ object.totalKilometers|floatformat:1 }} km</h5>
-            <ul class="list-unstyled list-inline rating mb-0">
-                <span id='stars-average'></span>
-                <li class="list-inline-item">
-                    <p class="text-muted">
-                        <script src="/static/javascript/drawStar.js"></script>
-                        <script>
-                            document.getElementById("stars-average").innerHTML = getStars("{{valuation}}");
-                        </script>
-                    </p>
-                </li>
-            </ul>
-            <br>
-            <p><i class="fas fa-traffic-light"></i> Partenza: {{ object.get_start_display }}</p>
-            <p><i class="fas fa-flag-checkered"></i> Arrivo: {{ object.get_end_display }}</p>
-
-            <p><i class="fas fa-walking"></i> Tempo a piedi:
-                {% if object.walkTime|intdiv:60 == 0 %}
-                    {{ object.walkTime|mod:60 }} min
-                {% else %}
-                    {{ object.walkTime|intdiv:60 }}:{{ object.walkTime|mod:60 }} h
-                {% endif %}
-            </p>
-            <p><i class="fas fa-bicycle"></i> Tempo in bici:
-                {% if object.bikeTime|intdiv:60 == 0 %}
-                    {{ object.bikeTime|mod:60 }} min
-                {% else %}
-                    {{ object.bikeTime|intdiv:60 }}:{{ object.bikeTime|mod:60 }} h
-                {% endif %}
-            </p>
-
-
-            <p><i class="fas fa-road"></i> Strada carrabile: {{ object.carriageablePath|floatformat:1 }} km</p>
-
-            <p><i class="fas fa-tree"></i> Strada non carrabile: {{ object.nonCarriageablePath|floatformat:1 }}
-                km</p>
-
-            <p><i class="fas fa-mountain"></i> Pendenza: {{ object.gradient }} %</p>
-            </ul>
-        </div>
-    </div>
-</div>
-
-
-<!-- Media delle recensioni -->
-<div class="container py-3">
-    {% if user.is_authenticated %}
-        <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
-           href="{% url 'insertReview' user.pk object.id %}" style="justify-content: right"><i class="fa fa-plus"
-                                                                                               aria-hidden="true"></i>
-            Aggiungi recensione
-        </a>
-        {% for comment in review %}
-            {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
-            {% endif %}
+    <div class="container py-3">
+        {% for message in messages %}
+            <div class="alert alert-success py-2" role="alert">
+                {{ message }}
+            </div>
         {% endfor %}
-    {% endif %}
-</div>
 
+        <!-- Blocco mappa -->
+        <div class="text-center">
+            <img class="img-fluid mx-auto block" src="{{ object.path.url }}" alt="Responsive image"
+                 data-toggle="modal"
+                 data-target="#ModalImage-{{ object.pk }}" style="cursor: pointer">
 
-<!-- Recensioni -->
-{% for comment in review %}
-    {% if comment.comment %}
-        <div class="container py-3">
-            <div class="card">
-                <img class="rounded-circle" width="50" height="50"
-                     src="{{ comment.get_profile.avatar.url }}"
-                     alt="Card image cap">
-                <ul class="list-unstyled list-inline rating mb-0">
-                    <span id='stars-{{ comment.pk }}'></span>
-                    <li class="list-inline-item">
-                        <p class="text-muted">
-                            <script src="/static/javascript/drawStar.js"></script>
-                            <script>
-                                document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
-                            </script>
-                        </p>
-                    </li>
-                </ul>
-                <p><b>{{ comment.title }}</b></p>
-                <p>{{ comment.get_profile.user.username }} ha scritto questa recensione
-                    il {{ comment.get_create_date }}:</p>
-                <p>{{ comment.comment }}</p>
-                {% for key,value in list_photo.items %}
-                    {% if key == comment %}
-                        {% if value %}
-                            {% for image in value %}
-                                <img width="100" height="100"
-                                     src="{{ image.photo.url }}">
-                            {% endfor %}
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-                {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                    <a class="btn btn-secondary" type="submit" role="button"
-                       href="{% url 'editReview' user.pk object.id %}">Modifica recensione
-                    </a>
-                {% endif %}
+            <div class="modal fade" id="ModalImage-{{ object.pk }}" tabindex="-1" role="dialog"
+                 aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img class="card-img-top" src="{{ object.path.url }}" alt="Card image cap">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    {% endif %}
-{% endfor %}
-{% endblock %}
 
-{% block javascript %}
+        <!-- Blocco info -->
+        <div class="card-container pt-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Percorso {{ object.id }} - {{ object.totalKilometers|floatformat:1 }} km</h5>
+                    <ul class="list-unstyled list-inline rating mb-0">
+                        <span id='stars-average'></span>
+                        <li class="list-inline-item">
+                            <p class="text-muted">
+                                <script src="/static/javascript/drawStar.js"></script>
+                                <script>
+                                    document.getElementById("stars-average").innerHTML = getStars("{{valuation}}");
+                                </script>
+                            </p>
+                        </li>
+                    </ul>
+                    <br>
+                    <p>
+                        <i class="fas fa-traffic-light"></i> Partenza: {{ object.get_start_display }}
+                        <br>
+                        <i class="fas fa-flag-checkered"></i> Arrivo: {{ object.get_end_display }}
+                    </p>
+
+                    <p>
+                        <b>Percorrenza:</b>
+                        <br>
+                        <i class="fas fa-walking"></i> Tempo a piedi:
+                        {% if object.walkTime|intdiv:60 == 0 %}
+                            {{ object.walkTime|mod:60 }} min
+                        {% else %}
+                            {{ object.walkTime|intdiv:60 }}:{{ object.walkTime|mod:60 }} h
+                        {% endif %}
+                        <br>
+                        <i class="fas fa-bicycle"></i> Tempo in bici:
+                        {% if object.bikeTime|intdiv:60 == 0 %}
+                            {{ object.bikeTime|mod:60 }} min
+                        {% else %}
+                            {{ object.bikeTime|intdiv:60 }}:{{ object.bikeTime|mod:60 }} h
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <b>Info percorso:</b>
+                        <br>
+                        <i class="fas fa-road"></i> Strada carrabile:
+                        {{ object.carriageablePath|floatformat:1 }} km
+                        <br>
+                        <i class="fas fa-tree"></i> Strada non carrabile:
+                        {{ object.nonCarriageablePath|floatformat:1 }} km
+                        <br>
+                        <i class="fas fa-mountain"></i> Pendenza: {{ object.gradient }} %</p>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Blocco recensioni -->
+    <div class="container py-3">
+        {% if user.is_authenticated %}
+            <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
+               href="{% url 'insertReview' user.pk object.id %}" style="justify-content: right">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Aggiungi recensione
+            </a>
+            {% for comment in review %}
+                {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                    <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+    <!-- Recensioni -->
+    <div class="container py-3">
+        <h4>Recensioni</h4>
+
+            {% for comment in review %}
+                <div class="py-2">
+                    {% if comment.comment %}
+                        <div class="card">
+                            <div class="col-md-12">
+                                <div class="row py-2 px-3">
+                                    <img class="rounded-circle" width="50" height="50"
+                                         src="{{ comment.get_profile.avatar.url }}"
+                                         alt="Card image cap">
+                                    <div class="col">
+                                        <ul class="list-unstyled list-inline rating mb-0">
+                                            <span id='stars-{{ comment.pk }}'></span>
+                                            <li class="list-inline-item">
+                                                <p class="text-muted">
+                                                    <script src="/static/javascript/drawStar.js"></script>
+                                                    <script>
+                                                        document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
+                                                    </script>
+                                                </p>
+                                            </li>
+                                        </ul>
+                                        <small>{{ comment.get_profile.user.username }} ha scritto questa
+                                            recensione
+                                            il {{ comment.get_create_date }}</small>
+                                    </div>
+                                </div>
+                                <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
+                                {% for key,value in list_photo.items %}
+                                    {% if key == comment %}
+                                        {% if value %}
+                                            {% for image in value %}
+                                                <!-- Image trigger modal -->
+                                                <img alt="picture"
+                                                     src="{{ image.photo.url }}"
+                                                     class="img-fluid" width="100" height="100" data-toggle="modal"
+                                                     data-target="#myModal-{{ image.pk }}" style="cursor: pointer">
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="myModal-{{ image.pk }}" tabindex="-1"
+                                                     role="dialog"
+                                                     aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                <img alt="picture"
+                                                                     src="{{ image.photo.url }}"
+                                                                     class="img-fluid">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                <div class="row py-2 px-3">
+                                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                                        <a class="btn btn-secondary" type="submit" role="button"
+                                           href="{% url 'editReview' user.pk object.id %}">
+                                            <i class="fas fa-edit"></i> Modifica recensione
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+    </div>
 {% endblock %}

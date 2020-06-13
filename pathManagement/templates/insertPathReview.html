@@ -5,7 +5,7 @@
 
 {% block slideshow %}
     <h1>Recensione</h1>
-    <form action="" method="post">{% csrf_token %}
+    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
         {{ form|crispy }}
         <input type="submit" value="Inserisci"/>
     </form>

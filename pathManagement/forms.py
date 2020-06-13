@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from pathManagement.models import Path, Review
+from pathManagement.models import Path, Review, ListPhoto
 from userManagement.models import Profile
 
 label_dict = {
@@ -45,9 +46,11 @@ class EditPathForm(ModelForm):
 
 
 class InsertPathReviewForm(ModelForm):
+    image = forms.ImageField(required=False)
+
     class Meta:
         model = Review
-        fields = ['title', 'comment', 'valuation']
+        fields = ['title', 'comment', 'valuation', ]
         labels = {
             'comment': _('Commento'),
             'title': _('Inserisci un titolo'),
@@ -74,6 +77,8 @@ class InsertPathReviewForm(ModelForm):
 
         if commit:
             instance.save()
+            if (self.cleaned_data['image']):
+                photo_path = ListPhoto.objects.create(review=instance, photo=self.cleaned_data['image'])
         return instance
 
 

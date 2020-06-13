@@ -11,9 +11,9 @@
                 <div class="row py-3 px-3">
                     <img class="rounded-circle" width="120" height="120" src="{{ user.profile.avatar.url }}">
                     <div class="col">
-                        <p>Username: {{ user.username }}</p>
-                        <p>Email: {{ user.email }}</p>
-                        <p>Ultimo login: {{ user.last_login }}
+                        <p>Username: {{ user.username }}
+                            <br> Email: {{ user.email }}
+                            <br>Ultimo login: {{ user.last_login }}</p>
                     </div>
                 </div>
                 <form action="" method="post" enctype="multipart/form-data">
@@ -31,7 +31,8 @@
 
                     <a href="{% url 'change_password' %}">Modifica password</a>
 
-                    <p>Per rimuovere l'account clicca <a data-target="#removeModal" data-toggle="modal">qui</a>
+                    <p>Per rimuovere l'account clicca
+                        <a data-target="#removeModal" data-toggle="modal" href="#">qui</a>
                     </p>
 
                     <div class="modal fade" id="removeModal" tabindex="-1" role="dialog"

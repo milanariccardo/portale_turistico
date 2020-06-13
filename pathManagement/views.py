@@ -70,16 +70,22 @@ def searchPath(request):
             path_list = Path.objects.none()
 
     path_filter = PathFilter(request.GET, queryset=path_list)
+    dict_num_review = {}
     review = {}
+
 
     for path in path_filter.qs:
         review[path.pk] = 0
         val = Review.objects.filter(path=path).values('valuation')
         iteration = val.count()
+        dict_num_review[path.pk] = iteration
 
         for i in val:
             review[path.pk] = review[path.pk] + i['valuation'] / iteration
-    return render(request, 'searchPath.html', {'filter': path_filter, 'review': review, 'num_review': iteration})
+
+    print(dict_num_review)
+
+    return render(request, 'searchPath.html', {'filter': path_filter, 'review': review, 'num_review': dict_num_review})
 
 
 class DetailPath(DetailView):

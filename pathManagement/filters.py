@@ -12,11 +12,14 @@ hour_choiches = (
     ('25', 'Più di 5 ore'),
 )
 
-class PathFilter(django_filters.FilterSet):
 
-    end_time = django_filters.ChoiceFilter(choices=hour_choiches, field_name='walkTime', method= 'hoursToMinutes', lookup_expr='lte', label='Quanto tempo vuoi dedicare?')
-    km_min = django_filters.NumberFilter(field_name='totalKilometers', lookup_expr='gte', label="Numero di kilometri minimo")
-    km_max = django_filters.NumberFilter(field_name='totalKilometers', lookup_expr='lte', label="Numero di kilometri massimo")
+class PathFilter(django_filters.FilterSet):
+    end_time = django_filters.ChoiceFilter(choices=hour_choiches, field_name='walkTime', method='hoursToMinutes',
+                                           lookup_expr='lte', label='Quanto tempo vuoi dedicare?')
+    km_min = django_filters.NumberFilter(field_name='totalKilometers', lookup_expr='gte',
+                                         label="Numero di kilometri minimo")
+    km_max = django_filters.NumberFilter(field_name='totalKilometers', lookup_expr='lte',
+                                         label="Numero di kilometri massimo")
 
     class Meta:
         model = Path
@@ -28,5 +31,5 @@ class PathFilter(django_filters.FilterSet):
         self.filters['start'].label = "Da che punto hai intenzione di partire?"
 
     def hoursToMinutes(self, queryset, name, value):
-        value = int(value)*60
-        return queryset.filter(walkTime__lte = value)
+        value = int(value) * 60
+        return queryset.filter(walkTime__lte=value)

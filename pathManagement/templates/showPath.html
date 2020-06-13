@@ -5,14 +5,6 @@
 {% block slideshow %}
     <div class="container py-4">
         <div class="col-md-12">
-            <div class="text-right py-2">
-                <a class="btn btn-secondary" role="button" href="{% url 'insertPath' %}">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    Aggiungi un nuovo percorso
-                </a>
-            </div>
-            <p><b>Lista percorsi</b></p>
-
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-success" role="alert">
@@ -20,14 +12,20 @@
                     </div>
                 {% endfor %}
             {% endif %}
+            <div class="row pb-2">
+                <h5><b>Lista percorsi</b></h5>
+            </div>
 
-            <table class="table">
+            <table class="table-sm"
+                   data-toggle="table"
+                   data-pagination="true"
+                   data-search="true">
                 <thead class="thead-light">
                 <tr>
-                    <th scope="col">Id percorso</th>
-                    <th scope="col">Partenza</th>
-                    <th scope="col">Arrivo</th>
-                    <th scope="col">Lunghezza</th>
+                    <th scope="col" data-sortable="true" data-field="id">Id percorso</th>
+                    <th scope="col" data-sortable="true" data-field="start">Partenza</th>
+                    <th scope="col" data-sortable="true" data-field="end">Arrivo</th>
+                    <th scope="col" data-sortable="true" data-field="path">Lunghezza</th>
                     <th scope="col">Azioni</th>
                 </tr>
                 </thead>
@@ -37,7 +35,7 @@
                         <th scope="row">{{ object.id }}</th>
                         <td>{{ object.get_start_display }}</td>
                         <td>{{ object.get_end_display }}</td>
-                        <td>{{ object.totalKilometers }}</td>
+                        <td>{{ object.totalKilometers }} km</td>
                         <td>
                             <a class="btn btn-warning" role="button" href="{% url 'editPath' object.pk %}"><i
                                     class="fa fa-wrench"
@@ -58,6 +56,12 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <div class="float-left">
+                <a class="btn btn-secondary" role="button" href="{% url 'insertPath' %}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Aggiungi un nuovo percorso
+                </a>
+            </div>
         </div>
     </div>
 
