@@ -112,7 +112,6 @@
     <!-- Recensioni -->
     <div class="container py-3">
         <h4>Recensioni</h4>
-
         {% for comment in review %}
             <div class="py-2">
                 {% if comment.comment %}
@@ -183,9 +182,9 @@
                 {% endif %}
             </div>
         {% endfor %}
-
     </div>
 {% endblock %}
+
 
 {% block javascript %}
     <script>
@@ -197,7 +196,9 @@
                     {
                         label: "Voti",
                         backgroundColor: [],
-                        data: [2478, 5267, 734, 784, 433]
+                        data: [{% for key, data in chart_data.items %}
+                            {{ data }},
+                        {% endfor %}]
                     }
                 ]
             },
@@ -205,7 +206,7 @@
                 legend: {display: false},
                 title: {
                     display: true,
-                    text: 'Predicted world population (millions) in 2050'
+                    text: 'Valutazioni del percorso'
                 }
             }
         });

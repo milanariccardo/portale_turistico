@@ -93,9 +93,13 @@ class DetailPath(DetailView):
         context = super(DetailPath, self).get_context_data()
         context['review'] = Review.objects.filter(path=self.object)
 
+        review_data = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
         dict = {}
+
         for image in context['review']:
             dict[image] = ListPhoto.objects.filter(review=image)
+            review_data[str(image.valuation)] = review_data[str(image.valuation)] + 1
+        context['chart_data'] = review_data
         context['list_photo'] = dict
         path_review = Review.objects.filter(path=self.object.id).values('valuation')
         iteration = path_review.count()
