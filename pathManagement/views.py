@@ -1,3 +1,7 @@
+import os
+
+import pandas as pd
+
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -9,6 +13,8 @@ from pathManagement.forms import InsertPathForm, EditPathForm, InsertPathReviewF
 from pathManagement.models import Path, Review, ListPhoto
 from userManagement.models import Profile
 
+from recommendation.recommendation import MatrixPathFeature
+
 
 class InsertPath(CreateView):
     model = Path
@@ -18,6 +24,10 @@ class InsertPath(CreateView):
     def form_valid(self, form):
         response = super(InsertPath, self).form_valid(form)
         messages.success(self.request, "Percorso inserito correttamente")
+
+        # Aggiorna la matrice di similarità
+        update_matrix = MatrixPathFeature()
+
         return response
 
     def get_success_url(self):
@@ -32,6 +42,10 @@ class EditPath(UpdateView):
     def form_valid(self, form):
         response = super(EditPath, self).form_valid(form)
         messages.success(self.request, "Informazioni modificate correttamente")
+
+        # Aggiorna la matrice di similarità
+        update_matrix = MatrixPathFeature()
+
         return response
 
     def get_success_url(self):
@@ -47,6 +61,10 @@ def removePath(request, pk):
     path = Path.objects.get(id=pk)
     path.delete()
     messages.success(request, "Percorso eliminato con successo")
+
+    # Aggiorna la matrice di similarità
+    update_matrix = MatrixPathFeature()
+
     return redirect('showPath')
 
 
@@ -107,6 +125,24 @@ class DetailPath(DetailView):
         for value in path_review:
             count = count + value['valuation'] / iteration
         context['valuation'] = count
+
+        recommendation = []
+
+        # Ottieni la matrice di similarità
+        if os.path.join(os.getcwd(), 'matrix'):
+            try:
+                # Leggi il file matrix
+                matrix = pd.read_csv(os.path.join(os.getcwd(), 'matrix'), index_col=0)
+                # Ottieni la riga relativa al path corrente e riordinala in ordine decrescente di similarità
+                row_path = matrix.loc[self.object.pk].sort_values(ascending=False)
+                # Restituisci i primi due risultati
+                recommendation = list(row_path.axes[0])[1:3]
+                recommendation = [int(x) for x in recommendation]
+                print(recommendation)
+            except:
+                print("La matrice non esiste")
+        context['recommendation'] = Path.objects.filter(pk__in=recommendation)
+
         return context
 
 
