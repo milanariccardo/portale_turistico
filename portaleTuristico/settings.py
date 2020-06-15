@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userManagement.apps.UsermanagementConfig',
     'pathManagement.apps.PathmanagementConfig',
+    'forum.apps.ForumConfig',
     'django_filters',
     'crispy_forms',
     'multiselectfield',

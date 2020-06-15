@@ -143,6 +143,9 @@ class DetailPath(DetailView):
                 print("La matrice non esiste")
         context['recommendation'] = Path.objects.filter(pk__in=recommendation)
 
+        # Contesto con i percorsi composti
+        context['compound_path'] = Path.objects.filter(start = self.object.end) & Path.objects.filter(activity=self.object.activity)
+
         return context
 
 

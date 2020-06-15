@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block slideshow %}
+    {{ category_list.title }}
+    {% if user.is_staff %}
+        <a role="button" class="btn btn-primary" href="{% url 'createCategory' %}"> Aggiungi categoria</a>
+        <a role="button" class="btn btn-warning" href="{% url 'editCategory'  category_list.title %}"> Modifica categoria</a>
+    {% endif %}
+{% endblock %}

@@ -16,6 +16,7 @@ urlpatterns = [
     path('', views.homepage, name='homepage'),
     path('accounts/', include('userManagement.urls')),
     path('path/', include('pathManagement.urls')),
+    path('forum/', include('forum.urls')),
     path('user_settings/<int:pk>/', UpdateUserSettings.as_view(), name='userSettings'),
     path('password/', change_password, name='change_password'),
 ]
