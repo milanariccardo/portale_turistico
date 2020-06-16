@@ -109,26 +109,37 @@ class DetailPath(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(DetailPath, self).get_context_data()
+
+        #Creazione del contesto relativo alle recensioni
         context['review'] = Review.objects.filter(path=self.object)
 
-        review_data = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
-        dict = {}
+        # Dizionario che sarà passato come set di dati per la creazione del grafico
+        review_data = {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0}
+        # Dizionario che conterrà le immagini inserite nelle review dagli utenti
+        photo_review = {}
 
         for image in context['review']:
-            dict[image] = ListPhoto.objects.filter(review=image)
+            photo_review[image] = ListPhoto.objects.filter(review=image)
             review_data[str(image.valuation)] = review_data[str(image.valuation)] + 1
+
         context['chart_data'] = review_data
-        context['list_photo'] = dict
+        context['list_photo'] = photo_review
+
         path_review = Review.objects.filter(path=self.object.id).values('valuation')
         iteration = path_review.count()
         count = 0
+
         for value in path_review:
             count = count + value['valuation'] / iteration
+
+        # Contesto per la media delle recensioni
         context['valuation'] = count
 
-        recommendation = []
+        # Contesto per il numero di persone che hanno recensito il percorso
+        context['people'] = iteration
 
-        # Ottieni la matrice di similarità
+        # Ottieni la matrice di similarità e i percorsi consigliati
+        recommendation = []
         if os.path.join(os.getcwd(), 'matrix'):
             try:
                 # Leggi il file matrix
@@ -138,13 +149,29 @@ class DetailPath(DetailView):
                 # Restituisci i primi due risultati
                 recommendation = list(row_path.axes[0])[1:3]
                 recommendation = [int(x) for x in recommendation]
-                print(recommendation)
             except:
                 print("La matrice non esiste")
-        context['recommendation'] = Path.objects.filter(pk__in=recommendation)
 
-        # Contesto con i percorsi composti
-        context['compound_path'] = Path.objects.filter(start = self.object.end) & Path.objects.filter(activity=self.object.activity)
+        # Creazione contesto recommandations
+        # Questa parte di view crea un dizionario del tipo {'PathObject(n)':valutazione_media}
+        # per essere successivamente passato come contesto
+        recommendation_context = {}
+        average_review = 0
+
+        for r in recommendation:
+            recommendation_review = Review.objects.filter(path__id=r).values('valuation')
+            num_path = recommendation_review.count()
+
+            for value in recommendation_review:
+                average_review = average_review + value['valuation'] / num_path
+            recommendation_context[Path.objects.filter(id=r)[0]] = [average_review, num_path]
+            average_review = 0
+        print(recommendation_context)
+        context['recommendation_context'] = recommendation_context
+
+        # Creazione contesto percorsi composti
+        context['compound_path'] = Path.objects.filter(start=self.object.end) & Path.objects.filter(
+            activity=self.object.activity)
 
         return context
 

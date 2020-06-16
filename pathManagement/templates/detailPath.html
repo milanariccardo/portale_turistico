@@ -6,7 +6,7 @@
 {% block title %}Percorso {{ object.id }}{% endblock %}
 
 {% block slideshow %}
-    <div class="container py-3">
+    <div class="container py-2">
         {% for message in messages %}
             <div class="alert alert-success py-2" role="alert">
                 {{ message }}
@@ -32,9 +32,9 @@
         </div>
 
         <!-- Blocco info -->
-        <div class="card-container pt-2">
+        <div class="card-container py-2">
             <div class="card">
-                <div class="card-body">
+                <div class="card-header">
                     <h5>Percorso {{ object.id }} - {{ object.totalKilometers|floatformat:1 }} km</h5>
                     <ul class="list-unstyled list-inline rating mb-0">
                         <span id='stars-average'></span>
@@ -44,10 +44,12 @@
                                 <script>
                                     document.getElementById("stars-average").innerHTML = getStars("{{valuation}}");
                                 </script>
+                                ({{ people }})
                             </p>
                         </li>
                     </ul>
-                    <br>
+                </div>
+                <div class="card-body">
                     <p>
                         <i class="fas fa-traffic-light"></i> Partenza: {{ object.get_start_display }}
                         <br>
@@ -86,102 +88,228 @@
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- Blocco recensioni -->
-    <div class="container py-3">
-        {% if user.is_authenticated %}
-            <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
-               href="{% url 'insertReview' user.pk object.id %}" style="justify-content: right">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                Aggiungi recensione
-            </a>
-            {% for comment in review %}
-                {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                    <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+    <!-- Blocco immagini descrittive -->
+    <div class="container text-center">
+        <img src="{{ path.difficultyImage.url }}" width="150" height="150"
+             class="img-fluid mb-4" alt="">
+        <img src="{{ path.contextImage.url }}" width="150" height="150" class="img-fluid mb-4"
+             alt="">
+        <img src="{{ path.transportImage.url }}" width="150" height="150" class="img-fluid mb-4"
+             alt="">
+
+        <img src="{{ path.audienceImage.url }}" width="150" height="150" class="img-fluid mb-4"
+             alt="">
     </div>
 
-    <div class="container py-3">
-        <canvas id="valuationChart" width="1000" height="400"></canvas>
+    <!-- Blocco valutazioni e consigli -->
+    <div class="container py-2">
+
+        <!-- Blocco valutazioni -->
+        <div class="card-deck">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Valutazioni percorso</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="valuationChart"></canvas>
+                    <br>
+                    Valutazione:
+                    <ul class="list-unstyled list-inline rating mb-0">
+                        <span id='stars-valuations'></span>
+                        <li class="list-inline-item">
+                            <p class="text-muted">
+                                <script src="/static/javascript/drawStar.js"></script>
+                                <script>
+                                    document.getElementById("stars-valuations").innerHTML = getStars("{{valuation}}");
+                                </script>
+                                {{ valuation }} su 5 ({{ people }})
+                            </p>
+                        </li>
+                    </ul>
+
+                    {% if user.is_authenticated %}
+                        <p id="review_text">
+                        Se non l'hai ancora fatto aggiungi una recensione, potrà essere utile ad altri utenti
+                        <br>
+                        <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
+                           href="{% url 'insertReview' user.pk object.id %}" style="justify-content: right">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Aggiungi recensione
+                        </a>
+                        {% for comment in review %}
+                            {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                                <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
+                                <script>document.getElementById("review_text").style.display = "none" </script>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Blocco consigli -->
+            <div class="card">
+                <div class="card-header">
+                    <h5>Potrebbero interessarti anche</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2 row-cols-xl-2 py-2">
+                        {% for recommendation_path, valuation in recommendation_context.items %}
+                            <div class="col ">
+                                <div class="card-deck">
+                                    <div class="card">
+                                        <img class="card-img-top" src="{{ recommendation_path.cover.url }}"
+                                             alt="Card image cap"
+                                             width="100%"
+                                             height="170px">
+                                        <div class="card-body">
+                                            <p class="card-title"><b>Percorso {{ recommendation_path.id }}
+                                                - {{ recommendation_path.totalKilometers }}
+                                                Km</b></p>
+                                            <ul class="list-unstyled list-inline rating mb-0">
+                                                <span id='id-path-{{ recommendation_path.id }}'></span>
+                                                <li class="list-inline-item">
+                                                    <script src="/static/javascript/drawStar.js"></script>
+                                                    <script>
+                                                        document.getElementById("id-path-{{ recommendation_path.id }}").innerHTML = getStars("{{ valuation|first }}");
+                                                    </script>
+                                                    ({{ valuation|last }})
+                                                </li>
+                                            </ul>
+                                            <small>
+                                                Difficotà: {{ recommendation_path.difficulty }}<br>
+                                                Partenza: {{ recommendation_path.get_start_display }}<br>
+                                                Arrivo: {{ recommendation_path.get_end_display }}<br>
+                                                Tempo a piedi:
+                                                {% if recommendation_path.walkTime|intdiv:60 == 0 %}
+                                                    {{ recommendation_path.walkTime|mod:60 }} min
+                                                {% else %}
+                                                    {{ recommendation_path.walkTime|intdiv:60 }}:
+                                                    {{ recommendation_path.walkTime|mod:60 }} h
+                                                {% endif %}
+                                                <br>
+                                                Tempo in bici:
+                                                {% if recommendation_path.bikeTime|intdiv:60 == 0 %}
+                                                    {{ recommendation_path.bikeTime|mod:60 }} min
+                                                {% else %}
+                                                    {{ recommendation_path.bikeTime|intdiv:60 }}:
+                                                    {{ recommendation_path.bikeTime|mod:60 }} h
+                                                {% endif %}
+                                            </small><br>
+                                            <hr/>
+                                            <a class="btn btn-secondary" type="submit" role="button"
+                                               href="{% url 'detailPath' recommendation_path.id %}">Visualizza
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Recensioni -->
-    <div class="container py-3">
-        <h4>Recensioni</h4>
-        {% for comment in review %}
-            <div class="py-2">
-                {% if comment.comment %}
-                    <div class="card">
-                        <div class="col-md-12">
-                            <div class="row py-2 px-3">
-                                <img class="rounded-circle" width="50" height="50"
-                                     src="{{ comment.get_profile.avatar.url }}"
-                                     alt="Card image cap">
-                                <div class="col">
-                                    <ul class="list-unstyled list-inline rating mb-0">
-                                        <span id='stars-{{ comment.pk }}'></span>
-                                        <li class="list-inline-item">
-                                            <p class="text-muted">
-                                                <script src="/static/javascript/drawStar.js"></script>
-                                                <script>
-                                                    document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
-                                                </script>
-                                            </p>
-                                        </li>
-                                    </ul>
-                                    <small>{{ comment.get_profile.user.username }} ha scritto questa
-                                        recensione
-                                        il {{ comment.get_create_date }}</small>
-                                </div>
-                            </div>
-                            <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
-                            {% for key,value in list_photo.items %}
-                                {% if key == comment %}
-                                    {% if value %}
-                                        {% for image in value %}
-                                            <!-- Image trigger modal -->
-                                            <img alt="picture"
-                                                 src="{{ image.photo.url }}"
-                                                 class="img-fluid" width="100" height="100" data-toggle="modal"
-                                                 data-target="#myModal-{{ image.pk }}" style="cursor: pointer">
+    <div class="container py-2">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recensioni</h5>
+            </div>
+        </div>
 
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="myModal-{{ image.pk }}" tabindex="-1"
-                                                 role="dialog"
-                                                 aria-labelledby="ModalCenterTitle" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <img alt="picture"
-                                                                 src="{{ image.photo.url }}"
-                                                                 class="img-fluid">
+        {% if review %}
+            {% for comment in review %}
+                <div class="py-2">
+                    {% if comment.comment %}
+                        <div class="card">
+                            <div class="col-md-12">
+                                <div class="row pt-2 px-3">
+                                    <img class="rounded-circle" width="50" height="50"
+                                         src="{{ comment.get_profile.avatar.url }}"
+                                         alt="Card image cap">
+                                    <div class="col">
+                                        <ul class="list-unstyled list-inline rating mb-0">
+                                            <span id='stars-{{ comment.pk }}'></span>
+                                            <li class="list-inline-item">
+                                                <p class="text-muted">
+                                                    <script src="/static/javascript/drawStar.js"></script>
+                                                    <script>
+                                                        document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
+                                                    </script>
+                                                </p>
+                                            </li>
+                                        </ul>
+                                        <small>{{ comment.get_profile.user.username }} ha scritto questa
+                                            recensione
+                                            il {{ comment.get_create_date }}</small>
+                                    </div>
+                                </div>
+                                <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
+                                {% for key,value in list_photo.items %}
+                                    {% if key == comment %}
+                                        {% if value %}
+                                            {% for image in value %}
+                                                <!-- Image trigger modal -->
+                                                <img alt="picture"
+                                                     src="{{ image.photo.url }}"
+                                                     class="img-fluid" width="100" height="100" data-toggle="modal"
+                                                     data-target="#myModal-{{ image.pk }}" style="cursor: pointer">
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="myModal-{{ image.pk }}" tabindex="-1"
+                                                     role="dialog"
+                                                     aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                <img alt="picture"
+                                                                     src="{{ image.photo.url }}"
+                                                                     class="img-fluid">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            {% endfor %}
+                                {% endfor %}
 
-                            <div class="row py-2 px-3">
-                                {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                                    <a class="btn btn-secondary" type="submit" role="button"
-                                       href="{% url 'editReview' user.pk object.id %}">
-                                        <i class="fas fa-edit"></i> Modifica recensione
-                                    </a>
-                                {% endif %}
+                                <div class="row pb-2 px-3">
+                                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                                        <small>
+                                            <a href="{% url 'editReview' user.pk object.id %}">
+                                                <i class="fas fa-edit"></i> Modifica recensione
+                                            </a>
+                                        </small>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                {% endif %}
-            </div>
-        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <br>
+            <p>Nessuna recensione presente, aggiungi te la prima recensione di questo percorso!</p>
+            {% if user.is_authenticated %}
+                <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
+                   href="{% url 'insertReview' user.pk object.id %}">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Aggiungi recensione
+                </a>
+                {% for comment in review %}
+                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                        <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
     </div>
+
 {% endblock %}
 
 
@@ -206,8 +334,27 @@
                 title: {
                     display: true,
                     text: 'Valutazioni del percorso'
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            min: 0,
+                            stepSize: 0,
+                            display: false
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+
+                    }]
                 }
-            }
+            },
+
         });
     </script>
 {% endblock %}
