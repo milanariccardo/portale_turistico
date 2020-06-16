@@ -4,11 +4,11 @@ from django_filters import ChoiceFilter
 from .models import Path, Review
 
 hour_choiches = (
-    ('1', '1h'),
-    ('2', '2h'),
-    ('3', '3h'),
-    ('4', '4h'),
-    ('5', '5h'),
+    ('1', '1 ora'),
+    ('2', '2 ore'),
+    ('3', '3 ore'),
+    ('4', '4 ore'),
+    ('5', '5 ore'),
     ('25', 'Più di 5 ore'),
 )
 

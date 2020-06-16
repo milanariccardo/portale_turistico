@@ -63,7 +63,13 @@ def removePath(request, pk):
     messages.success(request, "Percorso eliminato con successo")
 
     # Aggiorna la matrice di similarità
-    update_matrix = MatrixPathFeature()
+    if not Path.objects.all():
+        try:
+            os.remove(os.path.join(os.getcwd(), 'matrix'))
+        except:
+            print("Impossibile eliminare il file")
+    else:
+        update_matrix = MatrixPathFeature()
 
     return redirect('showPath')
 
@@ -110,7 +116,7 @@ class DetailPath(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(DetailPath, self).get_context_data()
 
-        #Creazione del contesto relativo alle recensioni
+        # Creazione del contesto relativo alle recensioni
         context['review'] = Review.objects.filter(path=self.object)
 
         # Dizionario che sarà passato come set di dati per la creazione del grafico
@@ -206,7 +212,7 @@ class InsertPathReview(CreateView):
             return self.form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('searchPath')
+        return reverse_lazy('detailPath', kwargs={'pk':self.kwargs.get('pk2')})
 
 
 ## Funzione che ritorna la review di una coppia (path.id, utente.id)
@@ -241,16 +247,19 @@ class EditPathReview(UpdateView):
         files = request.FILES.getlist('image')
         review = return_review(self.kwargs.get('pk2'), self.kwargs.get('pk1'))
         if form.is_valid():
+            messages.success(self.request, "Informazioni modificate correttamente")
             for f in files:
                 ListPhoto.objects.create(review=review, photo=f)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
+    '''
     def form_valid(self, form):
         response = super(EditPathReview, self).form_valid(form)
         messages.success(self.request, "Informazioni modificate correttamente")
         return response
+    '''
 
     def get_success_url(self):
         return reverse_lazy('detailPath', kwargs={'pk': self.kwargs.get('pk2')})

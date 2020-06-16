@@ -76,7 +76,7 @@ class Path(models.Model):
     carriageablePath = models.FloatField(blank=True, default=0, validators=[MinValueValidator(0)])
     nonCarriageablePath = models.FloatField(blank=True, default=0, validators=[MinValueValidator(0)])
     totalKilometers = models.FloatField(editable=False, blank=True, default='0')
-    difficulty = MultiSelectField(choices=difficultyChoices)
+    difficulty = models.CharField(max_length=30, choices=difficultyChoices)
     difficultyImage = models.ImageField(blank=False, upload_to=user_directory_path)
     context = MultiSelectField(choices=contextChoices)
     contextImage = models.ImageField(blank=False, upload_to=user_directory_path)

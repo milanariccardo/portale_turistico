@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block slideshow %}
+    {% if thread.is_active %}
+        <b>{{ thread.title }}</b><br>
+         <img class="rounded-circle" width="50" height="50"
+             src="{{ thread.user.avatar.url }}"
+             alt="Card image cap">
+        {{ thread.get_user.username }} ha scritto: <br>
+        {{ thread.text }}<br>
+        <br><br>
+        <b>RISPOSTE:</b><br>
+        {% for comm in comment %}
+            {#            {% with item.itemimage_set.all|first as image %}#}
+            {#                <img src="{{ image.url }}"/>#}
+            {#            {% endwith %}#}
+            <img class="rounded-circle" width="50" height="50"
+                 src="{{ comm.user.avatar.url }}"
+                 alt="Card image cap">
+            L'utente {{ comm.get_user.username }} ha scritto: <br> {{ comm.text }} <br>
+
+        {% endfor %}
+        <a role="button" class="btn btn-success" href="{% url 'createComment' category.pk thread.pk %}">Rispondi</a>
+    {% endif %}
+
+{% endblock %}

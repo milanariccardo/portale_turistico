@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.db import models
 from userManagement.models import Profile
 
-# Create your models here.
 
+# Create your models here.
 
 
 # def get_deleted_user():
@@ -16,7 +17,8 @@ from userManagement.models import Profile
 
 
 class Category(models.Model):
-    title = models.CharField(primary_key=True, max_length=30)
+    title = models.CharField(max_length=30, unique=True)
+
 
 class Thread(models.Model):
     # user = models.ForeignKey(Profile, on_delete=models.SET(get_deleted_user()))
@@ -27,7 +29,11 @@ class Thread(models.Model):
     is_active = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default="None")
 
+    def get_create_date(self):
+        return self.created_at.strftime("%d/%m/%Y")
 
+    def get_user(self):
+        return self.user.user
 
 
 class Comment(models.Model):
@@ -36,3 +42,9 @@ class Comment(models.Model):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
+
+    def get_create_date(self):
+        return self.created_at.strftime("%d/%m/%Y")
+
+    def get_user(self):
+        return self.user.user
