@@ -97,12 +97,10 @@ class CreateThreadForum(CreateView):
 
 def delete_thread(request, **kwargs):
     print(kwargs['pk_thread'])
-    # image = ListPhoto.objects.get(pk=kwargs['pk'])
-    # image.delete()
-    # messages.success(request, "Rimozione effettuata correttamente")
-    # print(kwargs['pk1'])
-    # print(kwargs['pk2'])
-    # return redirect(reverse('editReview', kwargs={'pk1': kwargs['pk1'], 'pk2': kwargs['pk2']}))
+    try:
+        Thread.objects.filter(pk=kwargs['pk_thread']).last().delete()
+    except:
+        print("Impossibile eliminare thread!")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
@@ -113,7 +111,6 @@ class ViewThreadCommentForum(DetailView):
 
     def get_context_data(self, **kwargs):
         # Ritorna tutti i commenti relativi al thread in ordine temporale
-        print(self.object)
         context = super().get_context_data(**kwargs)
         context['comment'] = Comment.objects.filter(thread=self.object).order_by('created_at')
 

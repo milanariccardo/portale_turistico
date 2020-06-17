@@ -18,7 +18,7 @@
         <tr>
             <th scope="col" data-sortable="true" data-field="title">Titolo</th>
             <th scope="col" data-sortable="true" data-field="creation_date">Data di creazione</th>
-            <th scope="col" data-sortable="true" data-field="user">Utente che ha iniziato la discussione</th>
+            <th scope="col" data-field="user">Utente che ha iniziato la discussione</th>
             <th scope="col" data-sortable="true" data-field="number_comment">Numero di Commenti</th>
             {% if user.is_staff %}
                 <th scope="col">Azioni</th>
@@ -27,23 +27,29 @@
         </thead>
         <tbody>
         {% for key,value in thread.items %}
-            {% if key.is_active %}
-                <tr>
-                    <th scope="row"><a href="{% url 'viewThreadComment' category.pk key.pk %}">{{ key.title }}</a></th>
-                    <td>{{ key.get_create_date }}</td>
-                    <td><img class="rounded-circle" width="50" height="50"
-                             src="{{ key.user.avatar.url }}"
-                             alt="Card image cap">{{ key.get_user.username }}</td>
-                    <td>{{ value }}</td>
-                    {% if user.is_staff %}
-                        <td>
-                            <a href="{% url 'lockThread' category.pk key.pk %}" title="Blocca Thread"><i
-                                    class="fas fa-ban"></i></a>
-                         <a href="{% url 'deleteThread' category.pk key.pk %}" title="Elimina Thread"><i class="fas fa-trash"></i></a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endif %}
+            <tr>
+                <th scope="row"><a href="{% url 'viewThreadComment' category.pk key.pk %}">{{ key.title }}
+                </a>
+                    {% if not key.is_active %}
+                        (chiuso)
+                    {% endif %}</th>
+                <td>{{ key.get_create_date }}</td>
+                <td><img class="rounded-circle" width="50" height="50"
+                         src="{{ key.user.avatar.url }}"
+                         alt="Card image cap">{{ key.get_user.username }}</td>
+                <td>{{ value }}</td>
+                {% if user.is_staff %}
+                    <td>
+                        <a href="{% url 'lockThread' category.pk key.pk %}" title="Blocca Thread"><i
+                                class="fas fa-ban"
+                                onclick="return confirm('Vuoi davvero sospendere il thread?')"></i></a>
+
+                        <a href="{% url 'deleteThread' category.pk key.pk %}" title="Elimina Thread"
+                           onclick="return confirm('Vuoi davvero eliminare il thread?')"><i
+                                class="fas fa-trash"></i></a>
+                    </td>
+                {% endif %}
+            </tr>
         {% empty %}
             <div class="alert alert-info" role="alert" style="text-align: center">
                 Nessun Thread disponibile
