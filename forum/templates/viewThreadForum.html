@@ -1,78 +1,87 @@
 {% extends 'base.html' %}
+{% block title %}Categoria {{ category.title }}{% endblock %}
 
 {% block slideshow %}
-    {% if messages %}
-        {% for message in messages %}
-            {% if "thread_unlock_error" in message.tags %}
-                <div class="alert alert-danger" role="alert">
-                    {{ message }}
-                </div>
-            {% else %}
-                <div class="alert alert-success" role="alert">
-                    {{ message }}
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+    <div class="container">
+        <div class="container py-2" id="mex-container">
+        {% if messages %}
+            {% for message in messages %}
+                {% if "thread_unlock_error" in message.tags %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </div>
 
-    <table class="table-sm"
-           data-toggle="table"
-           data-pagination="true"
-           data-page-size="10"
-           data-search="true">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col" data-sortable="true" data-field="title">Titolo</th>
-            <th scope="col" data-sortable="true" data-field="creation_date">Data di creazione</th>
-            <th scope="col" data-field="user">Utente che ha iniziato la discussione</th>
-            <th scope="col" data-sortable="true" data-field="number_comment">Numero di Commenti</th>
-            {% if user.is_staff %}
-                <th scope="col">Azioni</th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for key,value in thread.items %}
+
+        <table class="table-sm"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-size="10"
+               data-search="true">
+            <thead class="thead-light">
             <tr>
-                <th scope="row"><a href="{% url 'viewThreadComment' category.pk key.pk %}">{{ key.title }}
-                </a>
-                    {% if not key.is_active %}
-                        (chiuso)
-                    {% endif %}</th>
-                <td>{{ key.get_create_date }}</td>
-                <td><img class="rounded-circle" width="50" height="50"
-                         src="{{ key.user.avatar.url }}"
-                         alt="Card image cap">{{ key.get_user.username }}</td>
-                <td>{{ value }}</td>
+                <th scope="col" data-sortable="true" data-field="title">Titolo</th>
+                <th scope="col" data-sortable="true" data-field="creation_date">Data di creazione</th>
+                <th scope="col" data-field="user">Utente che ha iniziato la discussione</th>
+                <th scope="col" data-sortable="true" data-field="number_comment">Numero di Commenti</th>
                 {% if user.is_staff %}
-                    <td>
-                        {% if key.is_active %}
-                            <a href="{% url 'lockThread' category.pk key.pk %}" title="Blocca Thread"
-                               onclick="return confirm('Vuoi davvero sospendere il thread?')"><i
-                                    class="fas fa-lock"></i></a>
-                        {% endif %}
-                        <a href="{% url 'deleteThread' category.pk key.pk %}" title="Elimina Thread"
-                           onclick="return confirm('Vuoi davvero eliminare il thread?')"><i
-                                class="fas fa-trash"></i></a>
-
-                        {% if not key.is_active %}
-                            <a href="{% url 'unlockThread' category.pk key.pk %}" title="Sblocca Thread"
-                               onclick="return confirm('Vuoi davvero sbloccare il thread?')">
-                                <i class="fas fa-unlock"></i>
-                            </a>
-                        {% endif %}
-
-
-                    </td>
+                    <th scope="col">Azioni</th>
                 {% endif %}
             </tr>
-        {% empty %}
-            <div class="alert alert-info" role="alert" style="text-align: center">
-                Nessun Thread disponibile
-            </div>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a role="button" class="btn btn-success" href="{% url 'createThread' category.pk %}">Crea un nuovo thread</a>
+            </thead>
+            <tbody>
+            {% for key,value in thread.items %}
+                <tr>
+                    <th scope="row"><a href="{% url 'viewThreadComment' category.pk key.pk %}" style="color: black">
+                        <h5>{{ key.title }}</h5>
+                    </a>
+                        {% if not key.is_active %}
+                            (chiuso)
+                        {% endif %}</th>
+                    <td>{{ key.get_create_date }}</td>
+                    <td><img class="rounded-circle" width="50" height="50"
+                             src="{{ key.user.avatar.url }}"
+                             alt="Card image cap"> {{ key.get_user.username }}</td>
+                    <td>{{ value }}</td>
+                    {% if user.is_staff %}
+                        <td>
+                            {% if not key.is_active %}
+                                <a href="{% url 'unlockThread' category.pk key.pk %}" title="Sblocca Thread"
+                                   onclick="return confirm('Vuoi davvero sbloccare il thread?')"
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-unlock"></i>
+                                </a>
+                            {% endif %}
+                            {% if key.is_active %}
+                                <a href="{% url 'lockThread' category.pk key.pk %}" class="btn btn-outline-primary"
+                                   title="Blocca Thread"
+                                   onclick="return confirm('Vuoi davvero sospendere il thread?')"><i
+                                        class="fas fa-lock"></i></a>
+                            {% endif %}
+                            <a href="{% url 'deleteThread' category.pk key.pk %}" class="btn btn-outline-danger"
+                               title="Elimina Thread"
+                               onclick="return confirm('Vuoi davvero eliminare il thread?')"><i
+                                    class="fas fa-trash"></i></a>
 
+
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <div class="alert alert-info" role="alert" style="text-align: center">
+                    Nessun Thread disponibile
+                </div>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a role="button" class="btn btn-outline-success" href="{% url 'createThread' category.pk %}"><i
+                class="fas fa-plus"></i> Crea nuovo thread </a>
+    </div>
 {% endblock %}

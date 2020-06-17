@@ -1,56 +1,89 @@
 {% extends 'base.html' %}
+{% block title %}{{ thread.title }}{% endblock %}
 {% block slideshow %}
+    <div class="container">
+        <div class="container py-2" id="mex">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-    <div class="container py-3">
         <div class="card py-2">
             <div class="col-md-12">
-                <p><b>{{ thread.title }}</b></p>
-                <img class="rounded-circle" width="50" height="50"
-                     src="{{ thread.user.avatar.url }}"
-                     alt="Card image cap">
-                <p>{{ thread.get_user.username }} ha scritto: </p>
+                <div class="row pt-2 px-3">
+                    <img class="rounded-circle" width="50" height="50"
+                         src="{{ thread.user.avatar.url }}"
+                         alt="Card image cap">
+                    <div class="col">
+                        <p><b>{{ thread.title }}</b> <br>
+                            {{ thread.get_user.username }} ha scritto: </p>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="container px-2" id="messages">
                 <p>{{ thread.text }}</p>
             </div>
         </div>
     </div>
-    <div class="container text-center"><p><b>RISPOSTE:</b></p></div>
-    {% for comm in comment %}
-        <div class="container py-3">
-            <div class="card py-2">
-                <div class="col-md-12">
-                    <img class="rounded-circle" width="50" height="50"
-                         src="{{ comm.user.avatar.url }}"
-                         alt="Card image cap">
-                    {% if comm.is_modified %}
-                        (modificato)
-                    {% endif %}
-                    <p>L'utente {{ comm.get_user.username }} ha scritto:</p>
-                    <p>{{ comm.text }}</p>
-                    {% if user.is_staff %}
-                        <a href="{% url 'deleteComment' category.pk thread.pk comm.pk %}" title="Elimina commento"
-                           onclick="return confirm('Vuoi davvero eliminare il commento?')">Elimina commento</a>
-                    {% endif %}
-                    {% if user.pk == comm.user.get_user.pk %}
-                        {% if thread.is_active %}
-                            <a href="{% url 'editComment' category.pk thread.pk comm.pk %}" title="Modifica commento">Modifica
-                                commento</a>
-                        {% endif %}
-                    {% endif %}
-                    <br>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
+
+    <div class="container">
+        <table class="table-sm"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="true">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" data-sortable="true" data-field="replies">Risposte</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for comm in comment %}
+                <tr>
+                    <th scope="row">
+                        <div class="container py-1">
+                            <div class="card py-2">
+                                <div class="col-md-12">
+                                    <img class="rounded-circle" width="50" height="50"
+                                         src="{{ comm.user.avatar.url }}"
+                                         alt="Card image cap">
+                                    {% if comm.is_modified %}
+                                        (modificato)
+                                    {% endif %}
+                                    <p>L'utente {{ comm.get_user.username }} ha scritto:</p>
+                                    <p>{{ comm.text }}</p>
+                                    {% if user.is_staff %}
+                                        <a href="{% url 'deleteComment' category.pk thread.pk comm.pk %}"
+                                           title="Elimina commento"
+                                           onclick="return confirm('Vuoi davvero eliminare il commento?')">Elimina
+                                            commento</a>
+                                    {% endif %}
+                                    {% if user.pk == comm.user.get_user.pk %}
+                                        {% if thread.is_active %}
+                                            <a href="{% url 'editComment' category.pk thread.pk comm.pk %}"
+                                               title="Modifica commento">Modifica
+                                                commento</a>
+                                        {% endif %}
+                                    {% endif %}
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
     {% if thread.is_active %}
         <div class="conteiner text-center">
-            <a role="button" class="btn btn-success" href="{% url 'createComment' category.pk thread.pk %}">Rispondi</a>
+            <a role="button" class="btn btn-success"
+               href="{% url 'createComment' category.pk thread.pk %}">Rispondi</a>
         </div>
     {% endif %}
 

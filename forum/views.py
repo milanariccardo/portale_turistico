@@ -11,6 +11,7 @@ from userManagement.models import Profile
 
 from braces import views as bc
 
+
 # Metodo che ritorna True se l'utente che ha effettuato la richiesta è amministratore o ha creato l'oggetto object
 def get_permission(request, object_user_pk):
     print(request.user.pk)
@@ -19,6 +20,7 @@ def get_permission(request, object_user_pk):
         return True
     else:
         return True if object_user_pk == request.user.pk else False
+
 
 # ok
 class MainPageForum(bc.LoginRequiredMixin, ListView):
@@ -36,6 +38,7 @@ class MainPageForum(bc.LoginRequiredMixin, ListView):
 
         return context
 
+
 # ok
 class CreateCategoryForum(bc.StaffuserRequiredMixin, CreateView):
     model = Category
@@ -43,8 +46,9 @@ class CreateCategoryForum(bc.StaffuserRequiredMixin, CreateView):
     fields = '__all__'
     success_url = reverse_lazy('mainPageCategory')
 
+
 # ok
-class UpdateCategoryForum(bc.StaffuserRequiredMixin,UpdateView):
+class UpdateCategoryForum(bc.StaffuserRequiredMixin, UpdateView):
     model = Category
     template_name = "updateCategoryForum.html"
     fields = '__all__'
@@ -55,8 +59,9 @@ class UpdateCategoryForum(bc.StaffuserRequiredMixin,UpdateView):
         messages.success(self.request, "Categoria modificata correttamente")
         return super(UpdateCategoryForum, self).form_valid(form)
 
+
 # ok
-class ViewThreadCategoryForum(bc.LoginRequiredMixin,ListView):
+class ViewThreadCategoryForum(bc.LoginRequiredMixin, ListView):
     model = Thread
     template_name = "viewThreadForum.html"
 
@@ -70,6 +75,7 @@ class ViewThreadCategoryForum(bc.LoginRequiredMixin,ListView):
         context['category'] = Category.objects.filter(pk=self.kwargs.get('pk')).last()
 
         return context
+
 
 # ok
 class CreateThreadForum(bc.LoginRequiredMixin, CreateView):
@@ -104,6 +110,7 @@ class CreateThreadForum(bc.LoginRequiredMixin, CreateView):
 
         return super(CreateThreadForum, self).form_valid(form)
 
+
 # ok
 class ViewThreadCommentForum(bc.LoginRequiredMixin, DetailView):
     model = Thread
@@ -118,6 +125,7 @@ class ViewThreadCommentForum(bc.LoginRequiredMixin, DetailView):
         # Ritorna la categoria del thread
         context['category'] = Category.objects.filter(pk=self.kwargs.get('pk_category')).last()
         return context
+
 
 # ok
 class CreateCommentThreadForum(bc.LoginRequiredMixin, CreateView):
@@ -158,6 +166,17 @@ class CreateCommentThreadForum(bc.LoginRequiredMixin, CreateView):
                                                          'pk_thread': self.kwargs.get('pk_thread')})
 
 
+#Elimina la categoria
+@staff_member_required
+def delete_category(request, **kwargs):
+    try:
+        Category.objects.filter(pk=kwargs['pk']).last().delete()
+        messages.success(request, 'Categoria eliminata')
+    except:
+        print("Impossibile eliminare la categoria!")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
 # Blocca il thread
 @staff_member_required
 def lockThread(request, pk_category, pk_thread):
@@ -171,6 +190,7 @@ def lockThread(request, pk_category, pk_thread):
         pass
     # Ritorna all'url precedente (quello dei thread)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 # Sblocca il thread
 @staff_member_required
@@ -192,7 +212,8 @@ def unlockThread(request, pk_category, pk_thread):
     # Ritorna all'url precedente (quello dei thread)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-#Elimina il thread
+
+# Elimina il thread
 @staff_member_required
 def delete_thread(request, **kwargs):
     try:
@@ -204,7 +225,7 @@ def delete_thread(request, **kwargs):
 
 
 # Modifica Commento
-class EditCommentForum(bc.LoginRequiredMixin,UpdateView):
+class EditCommentForum(bc.LoginRequiredMixin, UpdateView):
     model = Comment
     template_name = "editCommentForum.html"
     fields = ['text']
@@ -219,7 +240,8 @@ class EditCommentForum(bc.LoginRequiredMixin,UpdateView):
         user = Profile.objects.filter(pk=var.user.pk).values('user').last()
 
         # Se sono l'utente che ha creato il commento (o parte dello staff) e il thread è ancora aperto
-        if get_permission(self.request, user['user']) & Thread.objects.filter(pk=var.thread.pk).values('is_active').last()['is_active']:
+        if get_permission(self.request, user['user']) & \
+                Thread.objects.filter(pk=var.thread.pk).values('is_active').last()['is_active']:
             return super(EditCommentForum, self).get(request, *args, **kwargs)
         else:
             raise PermissionDenied
@@ -233,6 +255,7 @@ class EditCommentForum(bc.LoginRequiredMixin,UpdateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('viewThreadComment', kwargs={'pk_category': self.kwargs.get('pk_category'),
                                                          'pk_thread': self.kwargs.get('pk_thread')})
+
 
 # Elimina Commento
 @staff_member_required

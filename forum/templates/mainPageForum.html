@@ -1,50 +1,59 @@
 {% extends 'base.html' %}
+{% block title %}Forum{% endblock %}
+
 {% block slideshow %}
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <table class="table-sm"
-           data-toggle="table"
-           data-pagination="true"
-           data-page-size="10"
-           data-search="true">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col" data-sortable="true" data-field="category">Categoria</th>
-            <th scope="col" data-sortable="true" data-field="number_thread">Numero di Thread</th>
-            {% if user.is_staff %}
-                <th scope="col">Azioni</th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for key,value in category.items %}
+        <table class="table-sm"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-size="10"
+               data-search="true">
+            <thead class="thead-light">
             <tr>
-                <th scope="row"><a href="{% url 'viewThreadCategory' key.pk %}">{{ key.title }}</a></th>
-                <td>{{ value }}</td>
+                <th scope="col" data-sortable="true" data-field="category">Categoria</th>
+                <th scope="col" data-sortable="true" data-field="number_thread">Numero di Thread</th>
                 {% if user.is_staff %}
-                    <td>
-                        <a role="button" class="btn btn-outline-primary" href="{% url 'editCategory' key.pk %}"> <i class="fas fa-edit"></i> Modifica
-                            categoria</a>
-                    </td>
+                    <th scope="col">Azioni</th>
                 {% endif %}
             </tr>
-        {% empty %}
-            <div class="alert alert-info" role="alert" style="text-align: center">
-                Nessuna categoria disponibile
-            </div>
+            </thead>
+            <tbody>
+            {% for key,value in category.items %}
+                <tr>
+                    <th scope="row"><a style="color: black" href="{% url 'viewThreadCategory' key.pk %}">
+                        <h5>{{ key.title }}</h5></a></th>
+                    <td>{{ value }}</td>
+                    {% if user.is_staff %}
+                        <td>
+                            <a role="button" class="btn btn-outline-primary" href="{% url 'editCategory' key.pk %}"
+                               title="Modifica categoria"><i
+                                    class="fas fa-edit"></i></a>
+                            <a role="button" class="btn btn-outline-danger" href="{% url 'deleteCategory' key.pk %}"
+                               title="Elimina categoria" onclick="return confirm('Vuoi davvero eliminare la categoria?')"><i
+                                    class="fas fa-trash"></i></a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <div class="alert alert-info" role="alert" style="text-align: center">
+                    Nessuna categoria disponibile
+                </div>
 
-        {% endfor %}
-        </tbody>
-    </table>
+            {% endfor %}
+            </tbody>
+        </table>
 
-     {% if user.is_staff %}
-        <a role="button" class="btn btn-outline-primary" href="{% url 'createCategory' %}"> <i class="fas fa-plus"></i> Aggiungi categoria</a>
-    {% endif %}
+        {% if user.is_staff %}
+            <a role="button" class="btn btn-outline-primary" href="{% url 'createCategory' %}"> <i
+                    class="fas fa-plus"></i> Aggiungi categoria</a>
+        {% endif %}
+    </div>
 {% endblock %}
