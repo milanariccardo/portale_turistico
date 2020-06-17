@@ -24,6 +24,7 @@
                                     <br>
                                     <div class="text-center pt-1">
                                         <a href="{% url 'deleteImageReview' pk_user pk_path imm.pk %}"
+                                           onclick="return confirm('Vuoi davvero eliminare la foto?')"
                                            class="btn btn-danger"
                                            type="submit"
                                            role="button" style="justify-content: right"> <i class="fas fa-trash"></i>
@@ -36,6 +37,11 @@
                     <button class="btn btn-warning btn-rounded z-depth-0" type="submit">
                         Modifica recensione
                     </button>
+                    <a role="button" class="btn btn-warning btn-rounded z-depth-0"
+                       href="{% url 'detailPath' object.path.pk %}"
+                       onclick="return confirm('Sei sicuro di annullare le modifiche?')">
+                        Annulla modifiche
+                    </a>
                 </form>
             </div>
         </div>

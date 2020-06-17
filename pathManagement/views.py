@@ -1,9 +1,12 @@
 import os
-
+from braces import views as bc
 import pandas as pd
 
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
@@ -15,8 +18,18 @@ from userManagement.models import Profile
 
 from recommendation.recommendation import MatrixPathFeature
 
+from forum.views import get_permission
 
-class InsertPath(CreateView):
+
+## Funzione che ritorna la review di una coppia (path.id, utente.id)
+def return_review(pk_path, pk_user):
+    path = Path.objects.filter(id=pk_path).last()
+    user = User.objects.filter(pk=pk_user).last()
+    profile = Profile.objects.filter(user=user).last()
+    return Review.objects.filter(user=profile, path=path).last()
+
+# Ok
+class InsertPath(bc.StaffuserRequiredMixin, CreateView):
     model = Path
     template_name = 'insertPath.html'
     form_class = InsertPathForm
@@ -33,8 +46,8 @@ class InsertPath(CreateView):
     def get_success_url(self):
         return reverse_lazy('showPath')
 
-
-class EditPath(UpdateView):
+# Ok
+class EditPath(bc.StaffuserRequiredMixin, UpdateView):
     model = Path
     template_name = 'modifyPath.html'
     form_class = EditPathForm
@@ -51,12 +64,13 @@ class EditPath(UpdateView):
     def get_success_url(self):
         return reverse_lazy('showPath')
 
-
-class ShowPath(ListView):
+# Ok
+class ShowPath(bc.StaffuserRequiredMixin, ListView):
     model = Path
     template_name = 'showPath.html'
 
-
+# Ok
+@staff_member_required
 def removePath(request, pk):
     path = Path.objects.get(id=pk)
     path.delete()
@@ -73,7 +87,7 @@ def removePath(request, pk):
 
     return redirect('showPath')
 
-
+# Ok
 def searchPath(request):
     km_max = request.GET.get('km_max')
     km_min = request.GET.get('km_min')
@@ -108,7 +122,7 @@ def searchPath(request):
 
     return render(request, 'searchPath.html', {'filter': path_filter, 'review': review, 'num_review': dict_num_review})
 
-
+# Ok
 class DetailPath(DetailView):
     model = Path
     template_name = 'detailPath.html'
@@ -153,13 +167,13 @@ class DetailPath(DetailView):
                 # Ottieni la riga relativa al path corrente e riordinala in ordine decrescente di similarità
                 row_path = matrix.loc[self.object.pk].sort_values(ascending=False)
                 # Restituisci i primi due risultati
-                recommendation = list(row_path.axes[0])[1:3]
+                recommendation = list(row_path.axes[0])[1:5]
                 recommendation = [int(x) for x in recommendation]
             except:
                 print("La matrice non esiste")
 
         # Creazione contesto recommandations
-        # Questa parte di view crea un dizionario del tipo {'PathObject(n)':valutazione_media}
+        # Questa parte di view crea un dizionario del tipo {'PathObject(n)': [valutazione_media, numero_voti]}
         # per essere successivamente passato come contesto
         recommendation_context = {}
         average_review = 0
@@ -172,17 +186,31 @@ class DetailPath(DetailView):
                 average_review = average_review + value['valuation'] / num_path
             recommendation_context[Path.objects.filter(id=r)[0]] = [average_review, num_path]
             average_review = 0
-        print(recommendation_context)
         context['recommendation_context'] = recommendation_context
 
         # Creazione contesto percorsi composti
-        context['compound_path'] = Path.objects.filter(start=self.object.end) & Path.objects.filter(
-            activity=self.object.activity)
+        # Questa parte di view crea un dizionario del tipo {'<PathObject(n)>': [valutazione_media, numero_voti]}
+        # per essere successivamente passato come contesto
+        compound_path_context = {}
+        average_compound_path_review = 0
 
+        # Recupero percorsi composti
+        compound_path = Path.objects.filter(start=self.object.end) & Path.objects.filter(activity=self.object.activity)
+        for cp in compound_path:
+            compound_path_review = Review.objects.filter(path=cp).values('valuation')
+            num_compound_path = compound_path_review.count()
+
+            # Calcolo valutazione media
+            for value in compound_path_review:
+                average_compound_path_review = average_compound_path_review + value['valuation'] / num_compound_path
+            compound_path_context[cp] = [average_compound_path_review, num_compound_path]
+            average_compound_path_review = 0
+
+        context['compound_path'] = compound_path_context
         return context
 
-
-class InsertPathReview(CreateView):
+# Ok
+class InsertPathReview(bc.LoginRequiredMixin, CreateView):
     model = Review
     template_name = 'insertPathReview.html'
     form_class = InsertPathReviewForm
@@ -212,21 +240,28 @@ class InsertPathReview(CreateView):
             return self.form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('detailPath', kwargs={'pk':self.kwargs.get('pk2')})
+        return reverse_lazy('detailPath', kwargs={'pk': self.kwargs.get('pk2')})
 
 
-## Funzione che ritorna la review di una coppia (path.id, utente.id)
-def return_review(pk_path, pk_user):
-    path = Path.objects.filter(id=pk_path).last()
-    user = User.objects.filter(pk=pk_user).last()
-    profile = Profile.objects.filter(user=user).last()
-    return Review.objects.filter(user=profile, path=path).last()
-
-
-class EditPathReview(UpdateView):
+# Ok
+class EditPathReview(bc.LoginRequiredMixin, UpdateView):
     model = Review
     template_name = 'editPathReview.html'
     form_class = EditPathReviewForm
+
+    def get(self, request, *args, **kwargs):
+        # Ottengo la review corrente
+        var = Review.objects.filter(path__id=self.kwargs['pk2']).last() and Review.objects.filter(
+            user__id=self.kwargs['pk1']).last()
+
+        # Ottengo l'utente associato al profilo che ha creato la review
+        user = Profile.objects.filter(pk=var.user.pk).values('user').last()
+
+        # Se sono l'utente che ha creato il commento (o parte dello staff)
+        if get_permission(self.request, user['user']):
+            return super(EditPathReview, self).get(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
 
     def get_object(self, queryset=None):
         return return_review(self.kwargs.get('pk2'), self.kwargs.get('pk1'))
@@ -254,22 +289,42 @@ class EditPathReview(UpdateView):
         else:
             return self.form_invalid(form)
 
-    '''
-    def form_valid(self, form):
-        response = super(EditPathReview, self).form_valid(form)
-        messages.success(self.request, "Informazioni modificate correttamente")
-        return response
-    '''
-
     def get_success_url(self):
         return reverse_lazy('detailPath', kwargs={'pk': self.kwargs.get('pk2')})
 
 
+# Ok
+@login_required
+def delete_review(request, **kwargs):
+    # Ottengo la review corrente
+    var = Review.objects.filter(path__id=kwargs['pk2']).last() and Review.objects.filter(
+        user__id=kwargs['pk1']).last()
+
+    # Ottengo l'utente associato al profilo che ha creato la review
+    user = Profile.objects.filter(pk=var.user.pk).values('user').last()
+    if get_permission(request, user['user']):
+        review = Review.objects.get(user__id=kwargs['pk1'], path__id=kwargs['pk2'])
+        reviewPhoto = ListPhoto.objects.filter(review=review)
+        reviewPhoto.delete()
+        review.delete()
+        messages.success(request, "Rimozione della recensione effettuata correttamente")
+        return redirect(reverse('detailPath', kwargs={'pk': kwargs['pk2']}))
+    else:
+        raise PermissionDenied
+
+# Ok
+@login_required
 def delete_image_review(request, **kwargs):
-    print(kwargs['pk'])
-    image = ListPhoto.objects.get(pk=kwargs['pk'])
-    image.delete()
-    messages.success(request, "Rimozione effettuata correttamente")
-    print(kwargs['pk1'])
-    print(kwargs['pk2'])
-    return redirect(reverse('editReview', kwargs={'pk1': kwargs['pk1'], 'pk2': kwargs['pk2']}))
+    # Ottengo la review corrente
+    var = Review.objects.filter(path__id=kwargs['pk2']).last() and Review.objects.filter(
+        user__id=kwargs['pk1']).last()
+
+    # Ottengo l'utente associato al profilo che ha creato la review
+    user = Profile.objects.filter(pk=var.user.pk).values('user').last()
+    if get_permission(request, user['user']):
+        image = ListPhoto.objects.get(pk=kwargs['pk'])
+        image.delete()
+        messages.success(request, "Rimozione effettuata correttamente")
+        return redirect(reverse('editReview', kwargs={'pk1': kwargs['pk1'], 'pk2': kwargs['pk2']}))
+    else:
+        raise PermissionDenied

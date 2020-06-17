@@ -2,9 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block slideshow %}
-    <h1>Nuovo thread</h1>
+    <h1>Modifica Commento</h1>
     <form action="" method="post">{% csrf_token %}
         {{ form|crispy }}
-        <input type="submit" value="Save" id="save">
+        <input type="submit" value="Save"/>
     </form>
 {% endblock %}

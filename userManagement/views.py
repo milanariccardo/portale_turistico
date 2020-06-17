@@ -1,5 +1,6 @@
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -10,10 +11,11 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import CreateView, UpdateView
 
 from userManagement.forms import SignupForm, UpdateUserSettingsForm
+from braces import views as bc
 
 accountActivationToken = PasswordResetTokenGenerator()
 
-
+# Ok
 class Registration(CreateView):
     form_class = SignupForm
     template_name = 'registration/registration.html'
@@ -64,11 +66,14 @@ def verifyUserEmail(request, user_id_b64=None, user_token=None):
 def confirmRegistration(request):
     return render(request, 'registration/confirmRegistration.html')
 
-
-class UpdateUserSettings(UpdateView):
+# OK
+class UpdateUserSettings(bc.LoginRequiredMixin, UpdateView):
     model = User
     template_name = 'updateSettings.html'
     form_class = UpdateUserSettingsForm
+
+    def get_object(self, **kwargs):
+        return User.objects.filter(pk=self.request.user.pk).last()
 
     def form_valid(self, form):
         response = super(UpdateUserSettings, self).form_valid(form)
@@ -76,9 +81,10 @@ class UpdateUserSettings(UpdateView):
         return response
 
     def get_success_url(self):
-        return reverse('userSettings', kwargs={'pk': self.request.user.pk})
+        return reverse('userSettings')
 
-
+# Ok
+@login_required
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -95,7 +101,7 @@ def change_password(request):
         'form': form
     })
 
-
+@login_required
 def removeAccount(request):
     user = request.user
     user.is_active = False

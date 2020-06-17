@@ -7,7 +7,8 @@ urlpatterns = [
     path('signup/', Registration.as_view(), name='registration'),
     path('verify/<str:user_id_b64>/<str:user_token>', views.verifyUserEmail, name='verifyUserEmail'),
     path('registration/confirm/', views.confirmRegistration, name='confirmRegistration'),
-    path('user_settings/<int:pk>/', UpdateUserSettings.as_view(), name='userSettings'),
+    # path('user_settings/<int:pk>/', UpdateUserSettings.as_view(), name='userSettings'),
+    path('user_settings/', UpdateUserSettings.as_view(), name='userSettings'),
     path('password/', views.change_password, name='change_password'),
     path('remove_account/', views.removeAccount, name='removeAccount'),
 

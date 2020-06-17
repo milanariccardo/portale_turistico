@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from portaleTuristico.settings import STATICFILES_DIRS
 
 
 def user_directory_path(instance, filename):
@@ -24,6 +23,8 @@ class Profile(models.Model):
     avatar = models.ImageField(blank=True, default=static_avatar_path(), upload_to=user_directory_path)
     email = models.EmailField(blank=False, unique=True, default='user_{0}@default.com'.format(User.pk))
 
+    def get_user(self):
+        return User.objects.filter(pk = self.user.pk).last()
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

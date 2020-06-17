@@ -3,9 +3,15 @@
 {% block slideshow %}
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
+            {% if "thread_unlock_error" in message.tags %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% else %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
         {% endfor %}
     {% endif %}
 
@@ -40,13 +46,23 @@
                 <td>{{ value }}</td>
                 {% if user.is_staff %}
                     <td>
-                        <a href="{% url 'lockThread' category.pk key.pk %}" title="Blocca Thread"><i
-                                class="fas fa-ban"
-                                onclick="return confirm('Vuoi davvero sospendere il thread?')"></i></a>
-
+                        {% if key.is_active %}
+                            <a href="{% url 'lockThread' category.pk key.pk %}" title="Blocca Thread"
+                               onclick="return confirm('Vuoi davvero sospendere il thread?')"><i
+                                    class="fas fa-lock"></i></a>
+                        {% endif %}
                         <a href="{% url 'deleteThread' category.pk key.pk %}" title="Elimina Thread"
                            onclick="return confirm('Vuoi davvero eliminare il thread?')"><i
                                 class="fas fa-trash"></i></a>
+
+                        {% if not key.is_active %}
+                            <a href="{% url 'unlockThread' category.pk key.pk %}" title="Sblocca Thread"
+                               onclick="return confirm('Vuoi davvero sbloccare il thread?')">
+                                <i class="fas fa-unlock"></i>
+                            </a>
+                        {% endif %}
+
+
                     </td>
                 {% endif %}
             </tr>
