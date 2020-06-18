@@ -11,6 +11,7 @@
             {% endfor %}
         {% endif %}
 
+
         <table class="table-sm"
                data-toggle="table"
                data-pagination="true"
@@ -37,7 +38,8 @@
                                title="Modifica categoria"><i
                                     class="fas fa-edit"></i></a>
                             <a role="button" class="btn btn-outline-danger" href="{% url 'deleteCategory' key.pk %}"
-                               title="Elimina categoria" onclick="return confirm('Vuoi davvero eliminare la categoria?')"><i
+                               title="Elimina categoria"
+                               onclick="return confirm('Vuoi davvero eliminare la categoria?')"><i
                                     class="fas fa-trash"></i></a>
                         </td>
                     {% endif %}
@@ -52,7 +54,7 @@
         </table>
 
         {% if user.is_staff %}
-            <a role="button" class="btn btn-outline-primary" href="{% url 'createCategory' %}"> <i
+            <a role="button" class="btn btn-outline-success" href="{% url 'createCategory' %}"> <i
                     class="fas fa-plus"></i> Aggiungi categoria</a>
         {% endif %}
     </div>

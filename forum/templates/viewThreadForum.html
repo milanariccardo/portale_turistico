@@ -4,20 +4,29 @@
 {% block slideshow %}
     <div class="container">
         <div class="container py-2" id="mex-container">
-        {% if messages %}
-            {% for message in messages %}
-                {% if "thread_unlock_error" in message.tags %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                    </div>
-                {% else %}
-                    <div class="alert alert-success" role="alert">
-                        {{ message }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if "thread_unlock_error" in message.tags %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page"><a style="color: #757575" href="{% url 'mainPageCategory' %}">Home
+                    forum</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a style="color: black"
+                        href="{% url 'viewThreadCategory' category.pk %}">Categoria: {{ category.title }}</a></li>
+            </ol>
+        </nav>
 
 
         <table class="table-sm"

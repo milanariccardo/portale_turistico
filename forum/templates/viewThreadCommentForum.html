@@ -12,6 +12,19 @@
             {% endif %}
         </div>
 
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page"><a style="color: #757575"
+                                                                          href="{% url 'mainPageCategory' %}">Home
+                    forum</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a style="color: #757575"
+                                                                          href="{% url 'viewThreadCategory' category.pk %}">Categoria: {{ category.title }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a style="color: black"
+                                                                          href="{% url 'viewThreadComment' category.pk thread.pk %}">Thread: {{ thread.title }}</a>
+                </li>
+            </ol>
+        </nav>
+
         <div class="card py-2">
             <div class="col-md-12">
                 <div class="row pt-2 px-3">
@@ -35,10 +48,11 @@
         <table class="table-sm"
                data-toggle="table"
                data-pagination="true"
+               data-page-size="5"
                data-search="true">
             <thead class="thead-light">
             <tr>
-                <th scope="col" data-sortable="true" data-field="replies">Risposte</th>
+                <th scope="col" data-field="replies">Risposte</th>
             </tr>
             </thead>
             <tbody>
@@ -79,7 +93,7 @@
             </tbody>
         </table>
     </div>
-    
+
     {% if thread.is_active %}
         <div class="conteiner text-center">
             <a role="button" class="btn btn-success"
