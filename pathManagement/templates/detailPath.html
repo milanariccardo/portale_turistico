@@ -6,7 +6,7 @@
 {% block title %}Percorso {{ object.id }}{% endblock %}
 
 {% block slideshow %}
-    <div class="container py-2">
+    <div class="container py-2" xmlns="http://www.w3.org/1999/html">
         {% for message in messages %}
             <div class="alert alert-success py-2" role="alert">
                 {{ message }}
@@ -14,7 +14,7 @@
         {% endfor %}
 
         <!-- Blocco mappa -->
-        <div class="text-center">
+        <div class="text-center"">
             <img class="img-fluid mx-auto block" src="{{ object.path.url }}" alt="Responsive image"
                  data-toggle="modal"
                  data-target="#ModalImage-{{ object.pk }}" style="cursor: pointer">
@@ -300,14 +300,122 @@
 
     <!-- Recensioni -->
     <div class="container py-2">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <h5 style="display: inline">Recensioni</h5>
-                    <a class="btn btn-secondary" id="aggiungi_recensione" type="submit"
-                       role="button"
-                       href="{% url 'insertReview' user.pk object.id %}"
-                       style="justify-content: right">
+        <table class="table-sm table-borderless"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-size="5"
+               data-search="true">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" data-field="replies">Recensioni <a class="btn btn-outline-success pull-right"
+                                                                   id="aggiungi_recensione"
+                                                                   type="submit"
+                                                                   role="button"
+                                                                   style="justify-content: right"
+                                                                   href="{% url 'insertReview' user.pk object.id %}">
+                    <i class="fas fa-plus"></i>
+                    Aggiungi recensione
+                    </a></th>
+                {% for comment in review %}
+                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                        <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            </thead>
+            {% if review %}
+                <tbody>
+                {% for comment in review %}
+                    <tr>
+                        <th scope="row">
+                            <div class="py-2">
+                                {% if comment.comment %}
+                                    <div class="card">
+                                        <div class="col-md-12">
+                                            <div class="row pt-2 px-3">
+                                                <img class="rounded-circle" width="50" height="50"
+                                                     src="{{ comment.get_profile.avatar.url }}"
+                                                     alt="Card image cap">
+                                                <div class="col">
+                                                    <ul class="list-unstyled list-inline rating mb-0">
+                                                        <span id='stars-{{ comment.pk }}'></span>
+                                                        <li class="list-inline-item">
+                                                            <p class="text-muted">
+                                                                <script src="/static/javascript/drawStar.js"></script>
+                                                                <script>
+                                                                    document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
+                                                                </script>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                    <small>{{ comment.get_profile.user.username }} ha scritto questa
+                                                        recensione
+                                                        il {{ comment.get_create_date }}</small>
+                                                </div>
+                                            </div>
+                                            <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
+                                            {% for key,value in list_photo.items %}
+                                                {% if key == comment %}
+                                                    {% if value %}
+                                                        {% for image in value %}
+                                                            <!-- Image trigger modal -->
+                                                            <img alt="picture"
+                                                                 src="{{ image.photo.url }}"
+                                                                 class="img-fluid" width="100" height="100"
+                                                                 data-toggle="modal"
+                                                                 data-target="#myModal-{{ image.pk }}"
+                                                                 style="cursor: pointer">
+
+                                                            <!-- Modal -->
+                                                            <div class="modal fade" id="myModal-{{ image.pk }}"
+                                                                 tabindex="-1"
+                                                                 role="dialog"
+                                                                 aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered"
+                                                                     role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-body">
+                                                                            <img alt="picture"
+                                                                                 src="{{ image.photo.url }}"
+                                                                                 class="img-fluid">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            <div class="row pb-2 px-3">
+                                                {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
+                                                    <small>
+                                                        <a href="{% url 'editReview' user.pk object.id %}">
+                                                            <i class="fas fa-edit"></i> Modifica recensione
+                                                        </a>
+                                                        <a href="{% url 'deleteReview' user.pk object.id %}"
+                                                           onclick="return confirm('Vuoi davvero eliminare la recensione?')">
+                                                            <i class="fas fa-trash-alt"></i> Elimina recensione
+                                                        </a>
+
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+            {% else %}
+                <br>
+                <p>Nessuna recensione presente, aggiungi te la prima recensione di questo percorso!</p>
+                {% if user.is_authenticated %}
+                    <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
+                       href="{% url 'insertReview' user.pk object.id %}">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         Aggiungi recensione
                     </a>
@@ -316,101 +424,8 @@
                             <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
                         {% endif %}
                     {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        {% if review %}
-            {% for comment in review %}
-                <div class="py-2">
-                    {% if comment.comment %}
-                        <div class="card">
-                            <div class="col-md-12">
-                                <div class="row pt-2 px-3">
-                                    <img class="rounded-circle" width="50" height="50"
-                                         src="{{ comment.get_profile.avatar.url }}"
-                                         alt="Card image cap">
-                                    <div class="col">
-                                        <ul class="list-unstyled list-inline rating mb-0">
-                                            <span id='stars-{{ comment.pk }}'></span>
-                                            <li class="list-inline-item">
-                                                <p class="text-muted">
-                                                    <script src="/static/javascript/drawStar.js"></script>
-                                                    <script>
-                                                        document.getElementById("stars-{{ comment.pk }}").innerHTML = getStars("{{comment.valuation}}");
-                                                    </script>
-                                                </p>
-                                            </li>
-                                        </ul>
-                                        <small>{{ comment.get_profile.user.username }} ha scritto questa
-                                            recensione
-                                            il {{ comment.get_create_date }}</small>
-                                    </div>
-                                </div>
-                                <p><b>{{ comment.title }}</b><br>{{ comment.comment }}</p>
-                                {% for key,value in list_photo.items %}
-                                    {% if key == comment %}
-                                        {% if value %}
-                                            {% for image in value %}
-                                                <!-- Image trigger modal -->
-                                                <img alt="picture"
-                                                     src="{{ image.photo.url }}"
-                                                     class="img-fluid" width="100" height="100" data-toggle="modal"
-                                                     data-target="#myModal-{{ image.pk }}" style="cursor: pointer">
-
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="myModal-{{ image.pk }}" tabindex="-1"
-                                                     role="dialog"
-                                                     aria-labelledby="ModalCenterTitle" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-body">
-                                                                <img alt="picture"
-                                                                     src="{{ image.photo.url }}"
-                                                                     class="img-fluid">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-
-                                <div class="row pb-2 px-3">
-                                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                                        <small>
-                                            <a href="{% url 'editReview' user.pk object.id %}">
-                                                <i class="fas fa-edit"></i> Modifica recensione
-                                            </a>
-                                            <a href="{% url 'deleteReview' user.pk object.id %}"  onclick="return confirm('Vuoi davvero eliminare la recensione?')">
-                                                <i class="fas fa-trash-alt"></i> Elimina recensione
-                                            </a>
-
-                                        </small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <br>
-            <p>Nessuna recensione presente, aggiungi te la prima recensione di questo percorso!</p>
-            {% if user.is_authenticated %}
-                <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
-                   href="{% url 'insertReview' user.pk object.id %}">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    Aggiungi recensione
-                </a>
-                {% for comment in review %}
-                    {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                        <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
-                    {% endif %}
-                {% endfor %}
+                {% endif %}
             {% endif %}
-        {% endif %}
     </div>
 
 {% endblock %}

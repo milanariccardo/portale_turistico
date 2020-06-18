@@ -3,6 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import RequestAborted
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
@@ -158,6 +159,8 @@ class CreateCommentThreadForum(bc.LoginRequiredMixin, CreateView):
 
         form.instance.user = profile
         form.instance.thread = thread
+
+        messages.success(self.request, "Commento inserito correttamente")
 
         return super(CreateCommentThreadForum, self).form_valid(form)
 

@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}Inserisci commento{% endblock %}
+
 {% block slideshow %}
-    <h1>Nuovo Commento</h1>
-    <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" value="Save" id="save">
-    </form>
+    <div class="container py-3">
+        <div class="card py-2">
+            <div class="col-md-12">
+                <h5>Inserisci una commento</h5>
+                <form action="" method="post">{% csrf_token %}
+                    {{ form|crispy }}
+                    <button class="btn btn-outline-success" type="submit">
+                        Inserisci commento
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -37,14 +37,13 @@
                         <td>{{ object.get_end_display }}</td>
                         <td>{{ object.totalKilometers }} km</td>
                         <td>
-                            <a class="btn btn-warning" role="button" href="{% url 'editPath' object.pk %}"><i
-                                    class="fa fa-wrench"
-                                    aria-hidden="true"></i>
-                                Modifica
-                            </a>
-                            <a class="btn btn-danger" role="button" href="{% url 'removePath' object.pk %}">
-                                <i class="fa fa-trash" aria-hidden="true"></i> Elimina
-                            </a>
+                            <a role="button" class="btn btn-outline-primary" href="{% url 'editPath' object.pk %}"
+                               title="Modifica percorso"><i
+                                    class="fas fa-edit"></i></a>
+                            <a role="button" class="btn btn-outline-danger" href="{% url 'removePath' object.pk %}"
+                               title="Elimina categoria"
+                               onclick="return confirm('Vuoi davvero eliminare la categoria?')"><i
+                                    class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 {% empty %}
@@ -57,10 +56,8 @@
                 </tbody>
             </table>
             <div class="float-left">
-                <a class="btn btn-secondary" role="button" href="{% url 'insertPath' %}">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                    Aggiungi un nuovo percorso
-                </a>
+                 <a role="button" class="btn btn-outline-success" href="{% url 'insertPath' %}"> <i
+                    class="fas fa-plus"></i> Aggiungi un nuovo percorso</a>
             </div>
         </div>
     </div>
