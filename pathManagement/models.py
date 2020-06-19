@@ -103,7 +103,7 @@ class Review(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     valuation = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     title = models.CharField(blank=False, max_length=255)
-    comment = models.TextField(blank=True, max_length=1000)
+    comment = models.TextField(blank=False, max_length=2000)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_profile(self):

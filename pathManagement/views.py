@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
@@ -28,6 +28,7 @@ def return_review(pk_path, pk_user):
     profile = Profile.objects.filter(user=user).last()
     return Review.objects.filter(user=profile, path=path).last()
 
+
 # Ok
 class InsertPath(bc.StaffuserRequiredMixin, CreateView):
     model = Path
@@ -45,6 +46,7 @@ class InsertPath(bc.StaffuserRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('showPath')
+
 
 # Ok
 class EditPath(bc.StaffuserRequiredMixin, UpdateView):
@@ -64,10 +66,12 @@ class EditPath(bc.StaffuserRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('showPath')
 
+
 # Ok
 class ShowPath(bc.StaffuserRequiredMixin, ListView):
     model = Path
     template_name = 'showPath.html'
+
 
 # Ok
 @staff_member_required
@@ -86,6 +90,7 @@ def removePath(request, pk):
         update_matrix = MatrixPathFeature()
 
     return redirect('showPath')
+
 
 # Ok
 def searchPath(request):
@@ -121,6 +126,7 @@ def searchPath(request):
             review[path.pk] = review[path.pk] + i['valuation'] / iteration
 
     return render(request, 'searchPath.html', {'filter': path_filter, 'review': review, 'num_review': dict_num_review})
+
 
 # Ok
 class DetailPath(DetailView):
@@ -208,6 +214,7 @@ class DetailPath(DetailView):
 
         context['compound_path'] = compound_path_context
         return context
+
 
 # Ok
 class InsertPathReview(bc.LoginRequiredMixin, CreateView):
@@ -311,6 +318,7 @@ def delete_review(request, **kwargs):
         return redirect(reverse('detailPath', kwargs={'pk': kwargs['pk2']}))
     else:
         raise PermissionDenied
+
 
 # Ok
 @login_required

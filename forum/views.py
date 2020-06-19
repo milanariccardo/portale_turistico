@@ -23,24 +23,26 @@ def get_permission(request, object_user_pk):
         return True if object_user_pk == request.user.pk else False
 
 
-# ok
+# ok - test
 class MainPageForum(bc.LoginRequiredMixin, ListView):
+    """Classe che implementa la vista per l'homepage del Forum. Mostra tutte le categorie di cui il forum è composto con associato il numero di thread per categoria"""
+
     model = Category
     template_name = "mainPageForum.html"
 
     def get_context_data(self, **kwargs):
         context = super(MainPageForum, self).get_context_data()
-        d = {}
-        # Crea un dizionario del tipo {category: numero_thread_attivi}
+        category_dictionary = {}
+        # Crea un dizionario del tipo {category: numero_thread}
         for cat in self.object_list:
             t = Thread.objects.filter(category=cat)
-            d[cat] = t.count()
-        context['category'] = d
+            category_dictionary[cat] = t.count()
+        context['category'] = category_dictionary
 
         return context
 
 
-# ok
+# ok - test
 class CreateCategoryForum(bc.StaffuserRequiredMixin, CreateView):
     model = Category
     template_name = "createCategoryForum.html"
@@ -48,7 +50,7 @@ class CreateCategoryForum(bc.StaffuserRequiredMixin, CreateView):
     success_url = reverse_lazy('mainPageCategory')
 
 
-# ok
+# ok -test
 class UpdateCategoryForum(bc.StaffuserRequiredMixin, UpdateView):
     model = Category
     template_name = "updateCategoryForum.html"
@@ -61,24 +63,24 @@ class UpdateCategoryForum(bc.StaffuserRequiredMixin, UpdateView):
         return super(UpdateCategoryForum, self).form_valid(form)
 
 
-# ok
+# ok - test
 class ViewThreadCategoryForum(bc.LoginRequiredMixin, ListView):
     model = Thread
     template_name = "viewThreadForum.html"
 
     def get_context_data(self, **kwargs):
         context = super(ViewThreadCategoryForum, self).get_context_data()
-        d = {}
+        thread_dictionary = {}
         # Creazione di un dizionario del tipo {thread: num_risposte}
         for th in Thread.objects.filter(category=self.kwargs.get('pk')):
-            d[th] = Comment.objects.filter(thread=th).count()
-        context['thread'] = d
+            thread_dictionary[th] = Comment.objects.filter(thread=th).count()
+        context['thread'] = thread_dictionary
         context['category'] = Category.objects.filter(pk=self.kwargs.get('pk')).last()
 
         return context
 
 
-# ok
+# ok - test
 class CreateThreadForum(bc.LoginRequiredMixin, CreateView):
     model = Thread
     template_name = "createThreadForum.html"

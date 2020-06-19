@@ -18,7 +18,8 @@
                                                                           href="{% url 'mainPageCategory' %}">Home
                     forum</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a style="color: #757575"
-                                                                          href="{% url 'viewThreadCategory' category.pk %}">Categoria: {{ category.title }}</a></li>
+                                                                          href="{% url 'viewThreadCategory' category.pk %}">Categoria: {{ category.title }}</a>
+                </li>
                 <li class="breadcrumb-item active" aria-current="page"><a style="color: black"
                                                                           href="{% url 'viewThreadComment' category.pk thread.pk %}">Thread: {{ thread.title }}</a>
                 </li>
@@ -70,19 +71,21 @@
                                     {% endif %}
                                     <p>L'utente {{ comm.get_user.username }} ha scritto:</p>
                                     <p>{{ comm.text }}</p>
-                                    {% if user.is_staff %}
-                                        <a href="{% url 'deleteComment' category.pk thread.pk comm.pk %}"
-                                           title="Elimina commento"
-                                           onclick="return confirm('Vuoi davvero eliminare il commento?')">Elimina
-                                            commento</a>
-                                    {% endif %}
-                                    {% if user.pk == comm.user.get_user.pk %}
-                                        {% if thread.is_active %}
-                                            <a href="{% url 'editComment' category.pk thread.pk comm.pk %}"
-                                               title="Modifica commento">Modifica
+                                    <small>
+                                        {% if user.is_staff %}
+                                            <a href="{% url 'deleteComment' category.pk thread.pk comm.pk %}"
+                                               title="Elimina commento"
+                                               onclick="return confirm('Vuoi davvero eliminare il commento?')"><i class="fas fa-trash-alt"></i>Elimina
                                                 commento</a>
                                         {% endif %}
-                                    {% endif %}
+                                        {% if user.pk == comm.user.get_user.pk %}
+                                            {% if thread.is_active %}
+                                                <a href="{% url 'editComment' category.pk thread.pk comm.pk %}"
+                                                   title="Modifica commento"> <i class="fas fa-edit"></i>Modifica
+                                                    commento</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </small>
                                     <br>
                                 </div>
                             </div>

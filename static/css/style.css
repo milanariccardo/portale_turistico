@@ -2,6 +2,8 @@ body {
     padding-top: 55px;
     height: 100%;
     position: relative;
+    background-color: #f3d9a8;
+
 }
 
 .main-container {
@@ -36,16 +38,6 @@ header,
 .asteriskField {
     display: none;
 }
-
-.modal-dialog{
-    position: relative;
-    display: table; /* This is important */
-    overflow-y: auto;
-    overflow-x: auto;
-    width: auto;
-    min-width: 300px;
-}
-
 
 
 

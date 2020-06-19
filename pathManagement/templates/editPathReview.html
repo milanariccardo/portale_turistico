@@ -14,26 +14,28 @@
                     {{ form.valuation|as_crispy_field }}
                     {{ form.comment|as_crispy_field }}
                     {{ form.image|as_crispy_field }}
-
-                    <p>Elimina immagini</p>
-                    <ul class="pagination pg-blue">
-                        {% for imm in image %}
-                            <li class="page-item">
-                                <div class="container px-2">
-                                    <img src="{{ imm.photo.url }}" height="100" width="100">
-                                    <br>
-                                    <div class="text-center pt-1">
-                                        <a href="{% url 'deleteImageReview' pk_user pk_path imm.pk %}"
-                                           onclick="return confirm('Vuoi davvero eliminare la foto?')"
-                                           class="btn btn-danger"
-                                           type="submit"
-                                           role="button" style="justify-content: right"> <i class="fas fa-trash"></i>
-                                        </a>
+                    {% if image %}
+                        <p>Elimina immagini</p>
+                        <ul class="pagination pg-blue">
+                            {% for imm in image %}
+                                <li class="page-item">
+                                    <div class="container px-2">
+                                        <img src="{{ imm.photo.url }}" class="img-fluid" height="100" width="100">
+                                        <br>
+                                        <div class="text-center pt-1">
+                                            <a href="{% url 'deleteImageReview' pk_user pk_path imm.pk %}"
+                                               onclick="return confirm('Vuoi davvero eliminare la foto? Anche se annullerai le modifiche alla recensione, le tue foto non saranno più visibili!')"
+                                               class="btn btn-danger"
+                                               type="submit"
+                                               role="button" style="justify-content: right"> <i
+                                                    class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     <button class="btn btn-warning btn-rounded z-depth-0" type="submit">
                         Modifica recensione
                     </button>
