@@ -1,9 +1,9 @@
+from sqlite3 import DatabaseError
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import PermissionDenied
-from django.core.exceptions import RequestAborted
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
@@ -114,7 +114,7 @@ class CreateThreadForum(bc.LoginRequiredMixin, CreateView):
         return super(CreateThreadForum, self).form_valid(form)
 
 
-# ok
+# ok - test
 class ViewThreadCommentForum(bc.LoginRequiredMixin, DetailView):
     model = Thread
     template_name = 'viewThreadCommentForum.html'
@@ -130,7 +130,7 @@ class ViewThreadCommentForum(bc.LoginRequiredMixin, DetailView):
         return context
 
 
-# ok
+# ok - test
 class CreateCommentThreadForum(bc.LoginRequiredMixin, CreateView):
     model = Comment
     template_name = "createCommentForum.html"
@@ -171,37 +171,42 @@ class CreateCommentThreadForum(bc.LoginRequiredMixin, CreateView):
                                                          'pk_thread': self.kwargs.get('pk_thread')})
 
 
-#Elimina la categoria
+#Elimina la categoria - test
 @staff_member_required
 def delete_category(request, **kwargs):
     try:
         Category.objects.filter(pk=kwargs['pk']).last().delete()
         messages.success(request, 'Categoria eliminata')
     except:
-        print("Impossibile eliminare la categoria!")
+        raise ObjectDoesNotExist
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-# Blocca il thread
+# Blocca il thread - test
 @staff_member_required
 def lockThread(request, pk_category, pk_thread):
     # Recupero il Thread e lo blocco
     t = Thread.objects.filter(pk=pk_thread).last()
-    t.is_active = False
     try:
+        t.is_active = False
         t.save()
         messages.success(request, 'Thread bloccato!')
     except:
-        pass
+        raise ObjectDoesNotExist
     # Ritorna all'url precedente (quello dei thread)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-# Sblocca il thread
+# Sblocca il thread - test
 @staff_member_required
 def unlockThread(request, pk_category, pk_thread):
     # Recupero il Thread
     t = Thread.objects.filter(pk=pk_thread).last()
+
+    # Se non esiste alcun oggetto thread con questa chiave
+    if not t:
+        raise ObjectDoesNotExist
+
     # Se il thread è bloccato
     if not t.is_active:
         t.is_active = True
@@ -212,7 +217,7 @@ def unlockThread(request, pk_category, pk_thread):
         t.save()
         messages.success(request, 'Thread sbloccato!')
     except:
-        pass
+        raise DatabaseError
 
     # Ritorna all'url precedente (quello dei thread)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -225,7 +230,7 @@ def delete_thread(request, **kwargs):
         Thread.objects.filter(pk=kwargs['pk_thread']).last().delete()
         messages.success(request, 'Thread eliminato!')
     except:
-        print("Impossibile eliminare thread!")
+        raise ObjectDoesNotExist
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
@@ -277,7 +282,7 @@ def delete_comment(request, **kwargs):
             Comment.objects.filter(pk=kwargs['pk_comment']).last().delete()
             messages.success(request, 'Commento eliminato!')
         except:
-            print("Impossibile eliminare commento!")
+            ObjectDoesNotExist
     else:
         raise PermissionDenied
 
