@@ -152,6 +152,7 @@ class DetailPath(DetailView):
         context['list_photo'] = photo_review
 
         path_review = Review.objects.filter(path=self.object.id).values('valuation')
+
         iteration = path_review.count()
         count = 0
 
@@ -172,7 +173,7 @@ class DetailPath(DetailView):
                 matrix = pd.read_csv(os.path.join(os.getcwd(), 'matrix'), index_col=0)
                 # Ottieni la riga relativa al path corrente e riordinala in ordine decrescente di similarità
                 row_path = matrix.loc[self.object.pk].sort_values(ascending=False)
-                # Restituisci i primi due risultati
+                # Restituisci i primi cinque risultati
                 recommendation = list(row_path.axes[0])[1:5]
                 recommendation = [int(x) for x in recommendation]
             except:
@@ -184,13 +185,14 @@ class DetailPath(DetailView):
         recommendation_context = {}
         average_review = 0
 
+
         for r in recommendation:
             recommendation_review = Review.objects.filter(path__id=r).values('valuation')
             num_path = recommendation_review.count()
 
             for value in recommendation_review:
                 average_review = average_review + value['valuation'] / num_path
-            recommendation_context[Path.objects.filter(id=r)[0]] = [average_review, num_path]
+            recommendation_context[Path.objects.filter(id=r).last()] = [average_review, num_path]
             average_review = 0
         context['recommendation_context'] = recommendation_context
 
@@ -199,6 +201,7 @@ class DetailPath(DetailView):
         # per essere successivamente passato come contesto
         compound_path_context = {}
         average_compound_path_review = 0
+
 
         # Recupero percorsi composti
         compound_path = Path.objects.filter(start=self.object.end) & Path.objects.filter(activity=self.object.activity)
