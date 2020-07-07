@@ -4,67 +4,93 @@
 {% block title %}Homepage{% endblock %}
 
 {% block slideshow %}
-    <div class="view intro-2">
-        <div class="full-bg-img">
-            <div class="mask rgba-black-light flex-center">
-                <div class="container text-center white-text">
-                    <div class="white-text text-center wow fadeInUp" style="color: black;">
-                        <br>
-                        <h2>Benvenuto a Bagno di Romagna</h2>
-                        <h5>Visita e scopri la nostra terra piena di storia e bellezze</h5>
-                        <br>
-                    </div>
-                </div>
+
+    <div class="card-deck py-2 px-2">
+        <!-- San Piero in Bagno -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center; font-family: CustomFontBold">Bagno di Romagna</h5>
+                <img class="card-img-top round-cicle" src="{% static 'img/simboliLocalità/BAGNO_DI_ROMAGNA.png' %}"
+                     alt="Card image cap">
+                <p class="card-text">Grazioso borgo termale, nel cuore della Romagna-Toscana, è posto lungo la
+                    E45, strada a scorrimento veloce che collega Roma, la capitale, a Ravenna, la città di mare
+                    custode dei capolavori bizantini. La purezza degli elementi, il calore naturale delle acque,
+                    l'intensità dei sapori, la cordialità di una piccola comunità di montagna e la qualità dei
+                    servizi, frutto di una lunga esperienza, sono le anime di una terra di incontri.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.bagnodiromagnaturismo.it/-/bagno-di-romagna-localita">Vedi altro</a>
             </div>
         </div>
+
+        <!-- San Piero in Bagno -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center; font-family: CustomFontBold">San Piero in Bagno</h5>
+                <img class="card-img-top round-cicle" src="{% static 'img/simboliLocalità/SAN_PIERO_IN_BAGNO.png' %}"
+                     alt="Card image cap">
+                <p class="card-text"> Posto nel fondovalle lungo il fiume Savio e la Strada di Grande Comunicazione
+                    E/45, è capoluogo del comune, sorto nel XIII secolo come "mercatale" del soprastante castello di
+                    Corzano che si è sviluppato con la lunga dominazione fiorentina.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.bagnodiromagnaturismo.it/-/san-piero-in-bagno-localita">Vedi altro</a>
+            </div>
+        </div>
+
+        <!-- Acquapartita -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center; font-family: CustomFontBold">Acquapartita</h5>
+                <img class="card-img-top round-cicle" src="{% static 'img/simboliLocalità/ACQUAPARTITA.png' %}"
+                     alt="Card image cap">
+                <p class="card-text"> La frazione di Acquapartita è posta ai margini di un laghetto (4 ettari) sulle
+                    pendici del monte Còmero, lungo la SP. 43 che da S. Piero in Bagno conduce al monte Fumaiolo e
+                    alle Sorgenti del Tevere. E' un luogo immerso nel verde, ideale per la vacanza ed il relax,
+                    dotato di alberghi, ristoranti rinomati per funghi, tartufi e cacciagione.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.bagnodiromagnaturismo.it/-/acquapartita-localita">Vedi altro</a>
+            </div>
+        </div>
+
+        <!-- Laghi -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center; font-family: CustomFontBold">Laghi</h5>
+                <img class="card-img-top round-cicle"
+                     src="{% static 'img/simboliLocalità/LAGO_PONTINI_E_LAGO_LUNGO.png' %}"
+                     alt="Card image cap">
+                <p class="card-text">Il Lago dei Pontini (748 mt slm) e il Lagolungo (616 mt slm) sono posti alle
+                    pendici del monte Còmero. Si sono formati a seguito di una enorme frana staccatasi il 15 febbraio
+                    del 1855 da San Cataldo. Intorno ad essi si trova un antico castagneto che annovera
+                    molte piante secolari.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.bagnodiromagnaturismo.it/-/bagno-lago-dei-pontini-e-lagolungo-luoghi_int_nat"> Vedi
+                    altro</a>
+            </div>
+
+        </div>
+
+        <!-- Alfero -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="text-align: center; font-family: CustomFontBold">Alfero</h5>
+                <img class="card-img-top round-cicle" src="{% static 'img/simboliLocalità/ALFERO.png' %}"
+                     alt="Card image cap">
+                <p class="card-text"> Alfero è posta in una splendida conca, dominata dai massicci del Comero e del
+                    Fumaiolo edincorniciata da secolari castagneti, boschi di faggi e abeti. Alfero è un felice connubio
+                    di
+                    bellezze naturali, moderne attrattrezzature, quiete e tradizionale
+                    ospitalità, che lo rendono luogo ideale per ritemprare corpo e spirito, con alberghi, ristoranti e
+                    una cucina strettamente legata al territorio. </p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.emiliaromagnaturismo.it/it/localita/alfero">Vedi altro</a>
+            </div>
+        </div>
+
     </div>
-{% endblock %}
 
-{% block content %}<p>
-
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc finibus metus id mi malesuada tempor id id nulla.
-    Suspendisse orci turpis, porta ut nibh eu, aliquet tempus neque. Vivamus lectus velit, hendrerit non arcu vel,
-    eleifend mollis purus. Donec ac laoreet dolor. Sed finibus et nisl eu fringilla. Etiam sagittis congue libero in
-    mattis. Morbi placerat purus eu augue ornare lacinia. Praesent pretium, diam nec cursus ornare, dui quam posuere
-    est, nec scelerisque velit elit vel erat. Maecenas in neque pharetra, mollis ante ac, scelerisque ligula. Nunc ac
-    libero risus.
-
-    Ut porta sit amet sem nec ultricies. Fusce imperdiet elementum vulputate. Sed mi magna, mollis quis diam consequat,
-    viverra consectetur lorem. Vivamus suscipit velit faucibus arcu maximus cursus. Integer vestibulum commodo mi, ut
-    accumsan dolor euismod et. Suspendisse quis ligula eu ex maximus tristique. Curabitur pharetra eros et odio
-    consectetur suscipit.
-
-    Curabitur gravida massa velit, vitae hendrerit leo imperdiet ut. Aenean vulputate velit a eros viverra, sit amet
-    posuere ante sagittis. Vestibulum blandit elit eu porta laoreet. Sed congue, diam sit amet luctus molestie, augue
-    sapien scelerisque nisl, et commodo diam magna sit amet nisl. Sed sit amet tellus sit amet ex volutpat maximus.
-    Vivamus feugiat enim at lorem fermentum hendrerit. Donec nisi lacus, dapibus non elit nec, finibus suscipit metus.
-    Vivamus quis justo sit amet orci cursus ullamcorper nec id sem.
-
-    Proin non erat blandit, euismod mauris ac, mattis sapien. Pellentesque sodales ac leo vitae feugiat. Integer dolor
-    felis, semper vitae consequat nec, commodo ac ante. Suspendisse aliquet sed urna ac iaculis. Etiam arcu ligula,
-    egestas ac metus id, mattis posuere purus. Etiam ex diam, consequat in rutrum eu, venenatis quis odio. Integer a
-    consequat lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed
-    efficitur laoreet orci. Ut varius nulla risus, eget luctus sem commodo non. Proin eleifend lobortis mi nec ornare.
-
-    Vivamus odio erat, gravida vel fringilla vel, dapibus ut ex. Praesent diam odio, maximus in magna sit amet,
-    pellentesque vulputate massa. Aenean rhoncus ligula quis odio commodo malesuada. In ultricies nibh vitae gravida
-    convallis. Nulla efficitur dictum orci nec ornare. Ut aliquet feugiat diam eget tempor. Curabitur sit amet varius
-    urna, vel commodo quam. Phasellus tincidunt cursus nisi non pellentesque. Nunc sem sapien, vulputate eu lacus non,
-    rhoncus lacinia elit. Nunc dapibus fringilla venenatis. Aenean dignissim enim vel purus semper sagittis.
-
-    Maecenas commodo urna sit amet arcu consectetur hendrerit et in lorem. Integer eget varius purus. In eros est,
-    hendrerit nec feugiat nec, dapibus ut ante. Suspendisse sit amet commodo libero. Proin ac ante mattis, accumsan
-    tortor posuere, interdum metus. Aliquam fringilla mattis nulla. Cras hendrerit neque id ex porta, non fermentum
-    velit lacinia. Vestibulum eget laoreet ex. Aenean sed nisl diam. Suspendisse laoreet sapien sem, vitae tincidunt
-    massa pharetra vitae. Donec risus justo, euismod in turpis at, semper tincidunt nulla. Phasellus sed est quis tellus
-    iaculis tempus. Nam eget enim eget felis tempus pretium.
-
-    Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aenean vitae risus a mi
-    efficitur ultricies. Proin consectetur lorem nec efficitur ultrices. Ut nec tortor at massa efficitur fermentum.
-    Duis pulvinar turpis sit amet lectus convallis, sed pellentesque dolor varius. Nulla quis sapien a turpis interdum
-    porttitor. Maecenas sit amet justo eget lacus bibendum consequat. In tincidunt aliquet purus, nec dapibus ex luctus
-    eu. Sed imperdiet varius nisl, nec ullamcorper ex consequat vel. In quam libero, consequat vitae lacus sit amet,
-    tempus euismod tellus. Maecenas congue vehicula lorem eu ornare. Pellentesque habitant morbi tristique senectus et
-    netus et malesuada fames ac turpis egestas. Nulla sit amet ligula et arcu volutpat lobortis. Maecenas finibus
-    malesuada elit non condimentum. </p>
 {% endblock %}

@@ -57,7 +57,7 @@ def order_valuations(queryset, best):
 
 class PathFilter(django_filters.FilterSet):
     end_time = django_filters.ChoiceFilter(choices=hour_choiches, field_name='walkTime', method='hoursToMinutes',
-                                           lookup_expr='lte', label='Quanto tempo vuoi dedicare?')
+                                           lookup_expr='lte', label='Quanto tempo vuoi camminare?')
     km_min = django_filters.NumberFilter(field_name='totalKilometers', lookup_expr='gte',
                                          label="Numero di kilometri minimo")
     km_max = django_filters.NumberFilter(field_name='totalKilometers', lookup_expr='lte',

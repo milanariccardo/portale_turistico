@@ -90,6 +90,6 @@ class EditPathReviewForm(ModelForm):
         fields = ['title', 'valuation', 'comment']
         labels = {
             'comment': _('Commento'),
-            'valuation': _('Valutazione'),
+            'valuation': _('Valutazione da 1 a 5'),
             'title': _('Inserisci un titolo'),
         }

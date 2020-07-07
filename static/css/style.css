@@ -2,9 +2,51 @@ body {
     padding-top: 55px;
     height: 100%;
     position: relative;
-    background-color: #f3d9a8;
-
+    background-color: white;
+    font-family: CustomFont;
 }
+
+@font-face {
+    font-family: "CustomFont";
+    src: url("font/SourceSansPro-Regular.ttf");
+}
+
+@font-face {
+    font-family: "CustomFontBold";
+    src: url("font/SourceSansPro-Bold.ttf");
+}
+
+p{
+    font-family: "CustomFont";
+}
+
+.navbar{
+    background-color: #6ab6ce;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: 0 none;
+}
+
+.btn-secondary {
+    background: #6ab6ce;
+    color: #ffffff;
+    border-color: #3a95b1;
+    font-family: CustomFont;
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .btn-secondary.active, .open > .dropdown-toggle.btn-secondary {
+    background: #3a95b1;
+    border-color: #3a95b1;
+    font-family: CustomFont;
+}
+
+.btn-secondary:active, .btn-secondary.active {
+    background: #3a95b1;
+    border-color: #3a95b1;
+    box-shadow: none;
+}
+
 
 .main-container {
     min-height: 100vh; /* will cover the 100% of viewport */
@@ -14,20 +56,12 @@ body {
     padding-bottom: 100px; /* height of your footer */
 }
 
-footer {
-    position: relative;
-    height: 60px;
-    bottom: 0;
-    width: 100%;
-    background-color: gray;
-    color: white;
-    text-align: center;
-}
-
+/*
 .intro-2 {
     background: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.fanpage.it%2Fwp-content%2Fuploads%2Fsites%2F12%2F2015%2F12%2Fvacanze-in-montagna-in-veneto.jpg&f=1&nofb=1") no-repeat center center;
     background-size: cover;
 }
+*/
 
 html,
 header,
@@ -38,6 +72,12 @@ header,
 .asteriskField {
     display: none;
 }
+
+.pagination-info{
+    display: none;
+}
+
+
 
 
 

@@ -50,69 +50,64 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="col-6">
-                        <p>
-                            <i class="fas fa-arrow-up"></i> Difficoltà: {{ object.difficulty }}<br>
-                            <i class="fas fa-traffic-light"></i> Partenza: {{ object.get_start_display }}<br>
-                            <i class="fas fa-flag-checkered"></i> Arrivo: {{ object.get_end_display }}<br>
-                            <i class="fas fa-hiking"></i> Attività: {{ object.activity }} <br>
-                        </p>
+                    <div class="row" id="first-row">
+                        <div class="col-sm-6">
+                            <p>
+                                <i class="fas fa-arrow-up"></i> Difficoltà: {{ object.difficulty }}<br>
+                                <i class="fas fa-traffic-light"></i> Partenza: {{ object.get_start_display }}<br>
+                                <i class="fas fa-flag-checkered"></i> Arrivo: {{ object.get_end_display }}<br>
+                                <i class="fas fa-hiking"></i> Attività: {{ object.activity }} <br>
+                            </p>
 
-                        <p>
-                            <b>Percorrenza:</b>
-                            <br>
-                            <i class="fas fa-walking"></i> Tempo a piedi:
-                            {% if object.walkTime|intdiv:60 == 0 %}
-                                {{ object.walkTime|mod:60 }} min
-                            {% else %}
-                                {{ object.walkTime|intdiv:60 }}:{{ object.walkTime|mod:60 }} h
-                            {% endif %}
-                            <br>
-                            <i class="fas fa-bicycle"></i> Tempo in bici:
-                            {% if object.bikeTime|intdiv:60 == 0 %}
-                                {{ object.bikeTime|mod:60 }} min
-                            {% else %}
-                                {{ object.bikeTime|intdiv:60 }}:{{ object.bikeTime|mod:60 }} h
-                            {% endif %}
-                        </p>
-
-                        <p>
-                            <b>Info percorso:</b>
-                            <br>
-                            <i class="fas fa-road"></i> Strada carrabile:
-                            {{ object.carriageablePath|floatformat:1 }} km
-                            <br>
-                            <i class="fas fa-tree"></i> Strada non carrabile:
-                            {{ object.nonCarriageablePath|floatformat:1 }} km
-                            <br>
-                            <i class="fas fa-mountain"></i> Pendenza: {{ object.gradient }} %
-                        </p>
-                    </div>
-
-                    <div class="col-6">
-
-                        <!-- Blocco valutazioni -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Valutazioni percorso</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="valuationChart"></canvas>
+                            <p>
+                                <b>Percorrenza:</b>
                                 <br>
-                                Valutazione:
-                                <ul class="list-unstyled list-inline rating mb-0">
-                                    <span id='stars-valuations'></span>
-                                    <li class="list-inline-item">
-                                        <p class="text-muted">
-                                            <script src="/static/javascript/drawStar.js"></script>
-                                            <script>
-                                                document.getElementById("stars-valuations").innerHTML = getStars("{{valuation}}");
-                                            </script>
-                                            {{ valuation }} su 5 ({{ people }})
-                                        </p>
-                                    </li>
-                                </ul>
-                            </div>
+                                <i class="fas fa-walking"></i> Tempo a piedi:
+                                {% if object.walkTime|intdiv:60 == 0 %}
+                                    {{ object.walkTime|mod:60 }} min
+                                {% else %}
+                                    {{ object.walkTime|intdiv:60 }}:{{ object.walkTime|mod:60 }} h
+                                {% endif %}
+                                <br>
+                                <i class="fas fa-bicycle"></i> Tempo in bici:
+                                {% if object.bikeTime|intdiv:60 == 0 %}
+                                    {{ object.bikeTime|mod:60 }} min
+                                {% else %}
+                                    {{ object.bikeTime|intdiv:60 }}:{{ object.bikeTime|mod:60 }} h
+                                {% endif %}
+                            </p>
+
+                            <p>
+                                <b>Info percorso:</b>
+                                <br>
+                                <i class="fas fa-road"></i> Strada carrabile:
+                                {{ object.carriageablePath|floatformat:1 }} km
+                                <br>
+                                <i class="fas fa-tree"></i> Strada non carrabile:
+                                {{ object.nonCarriageablePath|floatformat:1 }} km
+                                <br>
+                                <i class="fas fa-mountain"></i> Pendenza: {{ object.gradient }} %
+                            </p>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <!-- Blocco valutazioni -->
+                            <canvas id="valuationChart"></canvas>
+
+                            Valutazione:
+                            <ul class="list-unstyled list-inline rating mb-0">
+                                <span id='stars-valuations'></span>
+                                <li class="list-inline-item">
+                                    <p class="text-muted">
+                                        <script src="/static/javascript/drawStar.js"></script>
+                                        <script>
+                                            document.getElementById("stars-valuations").innerHTML = getStars("{{valuation}}");
+                                        </script>
+                                        {{ valuation|floatformat:2 }} su 5 ({{ people }})
+                                    </p>
+                                </li>
+                            </ul>
+
                         </div>
                     </div>
                 </div>
@@ -269,15 +264,16 @@
 
     <!-- Recensioni -->
     <div class="container py-2">
-        <table class="table-sm table-borderless"
+        <table class="table-sm"
                data-toggle="table"
                data-pagination="true"
                data-page-size="5"
-               data-search="true">
+               data-search="true"
+               >
             <thead class="thead-light">
             <tr>
                 <th scope="col" data-field="replies">Recensioni {% if user.is_authenticated %}
-                    <a class="btn btn-outline-success pull-right"
+                    <a class="btn btn-secondary pull-right"
                        id="aggiungi_recensione"
                        type="submit"
                        role="button"
@@ -383,21 +379,7 @@
                 {% endfor %}
                 </tbody>
                 </table>
-            {% else %}
-                <br>
-                <p>Nessuna recensione presente, aggiungi te la prima recensione di questo percorso!</p>
-                {% if user.is_authenticated %}
-                    <a class="btn btn-secondary" id="aggiungi_recensione" type="submit" role="button"
-                       href="{% url 'insertReview' user.pk object.id %}">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                        Aggiungi recensione
-                    </a>
-                    {% for comment in review %}
-                        {% if comment.user.user.username|stringformat:"s" == user|stringformat:"s" %}
-                            <script>document.getElementById("aggiungi_recensione").style.display = "none" </script>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+
             {% endif %}
     </div>
 
@@ -413,7 +395,13 @@
                 datasets: [
                     {
                         label: "Voti",
-                        backgroundColor: [],
+                        backgroundColor: [
+                            'rgba(164,210,225)',
+                            'rgba(164,210,225)',
+                            'rgba(164,210,225)',
+                            'rgba(164,210,225)',
+                            'rgba(164,210,225)',
+                        ],
                         data: [{% for key, data in chart_data.items %}
                             {{ data }},
                         {% endfor %}]
