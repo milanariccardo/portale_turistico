@@ -26,6 +26,7 @@ class Thread(models.Model):
         return self.user.user
 
 
+
 class Comment(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)

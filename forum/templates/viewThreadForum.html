@@ -64,17 +64,17 @@
                             {% if not key.is_active %}
                                 <a href="{% url 'unlockThread' category.pk key.pk %}" title="Sblocca Thread"
                                    onclick="return confirm('Vuoi davvero sbloccare il thread?')"
-                                   class="btn btn-outline-primary">
+                                   class="btn btn-primary">
                                     <i class="fas fa-unlock"></i>
                                 </a>
                             {% endif %}
                             {% if key.is_active %}
-                                <a href="{% url 'lockThread' category.pk key.pk %}" class="btn btn-outline-primary"
+                                <a href="{% url 'lockThread' category.pk key.pk %}" class="btn btn-primary"
                                    title="Blocca Thread"
                                    onclick="return confirm('Vuoi davvero sospendere il thread?')"><i
                                         class="fas fa-lock"></i></a>
                             {% endif %}
-                            <a href="{% url 'deleteThread' category.pk key.pk %}" class="btn btn-outline-danger"
+                            <a href="{% url 'deleteThread' category.pk key.pk %}" class="btn btn-danger"
                                title="Elimina Thread"
                                onclick="return confirm('Vuoi davvero eliminare il thread?')"><i
                                     class="fas fa-trash"></i></a>
@@ -90,7 +90,7 @@
             {% endfor %}
             </tbody>
         </table>
-        <a role="button" class="btn btn-outline-success" href="{% url 'createThread' category.pk %}"><i
+        <a role="button" class="btn btn-secondary" href="{% url 'createThread' category.pk %}"><i
                 class="fas fa-plus"></i> Crea nuovo thread </a>
     </div>
 {% endblock %}

@@ -37,10 +37,10 @@
                         <td>{{ object.get_end_display }}</td>
                         <td>{{ object.totalKilometers }} km</td>
                         <td>
-                            <a role="button" class="btn btn-outline-primary" href="{% url 'editPath' object.pk %}"
+                            <a role="button" class="btn btn-primary" href="{% url 'editPath' object.pk %}"
                                title="Modifica percorso"><i
                                     class="fas fa-edit"></i></a>
-                            <a role="button" class="btn btn-outline-danger" href="{% url 'removePath' object.pk %}"
+                            <a role="button" class="btn btn-danger" href="{% url 'removePath' object.pk %}"
                                title="Elimina categoria"
                                onclick="return confirm('Vuoi davvero eliminare la categoria?')"><i
                                     class="fas fa-trash"></i></a>
@@ -56,7 +56,7 @@
                 </tbody>
             </table>
             <div class="float-left">
-                 <a role="button" class="btn btn-outline-success" href="{% url 'insertPath' %}"> <i
+                 <a role="button" class="btn btn-success" href="{% url 'insertPath' %}"> <i
                     class="fas fa-plus"></i> Aggiungi un nuovo percorso</a>
             </div>
         </div>

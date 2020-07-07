@@ -98,8 +98,8 @@
     </div>
 
     {% if thread.is_active %}
-        <div class="conteiner text-center">
-            <a role="button" class="btn btn-success"
+        <div class="conteiner text-center py-2">
+            <a role="button" class="btn btn-secondary"
                href="{% url 'createComment' category.pk thread.pk %}">Rispondi</a>
         </div>
     {% endif %}

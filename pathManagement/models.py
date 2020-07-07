@@ -30,7 +30,7 @@ class Path(models.Model):
 
     locationChoices = (
         ('bagnodiromagna', 'Bagno di Romagna'),
-        ('sanpietroinbagno', 'San Pietro in Bagno'),
+        ('sanpietroinbagno', 'San Piero in Bagno'),
         ('acquapartita', 'Acquapartita'),
         ('laghi', 'Laghi'),
         ('alfero', 'Alfero'),
