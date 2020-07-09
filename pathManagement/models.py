@@ -26,6 +26,7 @@ class Path(models.Model):
         ('didattica', 'Didattica'),
         ('esplorazione', 'Esplorazione'),
         ('escursionismo', 'Escursionismo'),
+        ('sportivo', 'Sportivo'),
     )
 
     locationChoices = (

@@ -204,17 +204,20 @@ class DetailPath(DetailView):
 
 
         # Recupero percorsi composti
-        compound_path = Path.objects.filter(start=self.object.end) & Path.objects.filter(activity=self.object.activity)
-        for cp in compound_path:
-            compound_path_review = Review.objects.filter(path=cp).values('valuation')
-            num_compound_path = compound_path_review.count()
+        # Se il percorso non è un anello restitituisci i percorsi composti
+        if self.object.start != self.object.end:
+            compound_path = Path.objects.filter(start=self.object.end) & Path.objects.filter(activity=self.object.activity)
+            for cp in compound_path:
+                compound_path_review = Review.objects.filter(path=cp).values('valuation')
+                num_compound_path = compound_path_review.count()
 
-            # Calcolo valutazione media
-            for value in compound_path_review:
-                average_compound_path_review = average_compound_path_review + value['valuation'] / num_compound_path
-            compound_path_context[cp] = [average_compound_path_review, num_compound_path]
-            average_compound_path_review = 0
-
+                # Calcolo valutazione media
+                for value in compound_path_review:
+                    average_compound_path_review = average_compound_path_review + value['valuation'] / num_compound_path
+                compound_path_context[cp] = [average_compound_path_review, num_compound_path]
+                average_compound_path_review = 0
+        else:
+            compound_path = {}
         context['compound_path'] = compound_path_context
         return context
 

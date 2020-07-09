@@ -20,13 +20,13 @@
 
         <!-- Blocco immagini descrittive -->
         <div class="container text-center">
-            <img src="{{ path.difficultyImage.url }}" width="150" height="150"
+            <img src="{{ path.difficultyImage.url }}" width="200" height="200"
                  class="img-fluid mb-4" alt="">
-            <img src="{{ path.contextImage.url }}" width="150" height="150" class="img-fluid mb-4"
+            <img src="{{ path.contextImage.url }}" width="200" height="200" class="img-fluid mb-4"
                  alt="">
-            <img src="{{ path.transportImage.url }}" width="150" height="150" class="img-fluid mb-4"
+            <img src="{{ path.transportImage.url }}" width="200" height="200" class="img-fluid mb-4"
                  alt="">
-            <img src="{{ path.audienceImage.url }}" width="150" height="150" class="img-fluid mb-4"
+            <img src="{{ path.audienceImage.url }}" width="200" height="200" class="img-fluid mb-4"
                  alt="">
         </div>
 
@@ -116,16 +116,16 @@
 
 
         <!-- Blocco valutazioni e percorsi composti -->
-        <div class="container py-2">
+        <div class="container py-2" id="valuation">
             <div class="card-deck">
 
-            </div>
+
 
             <!-- Blocco consigli -->
             {% if compound_path %}
                 <div class="card">
                     <div class="card-header">
-                        <h5>Questo percorso è parte di un percorso più lungo</h5>
+                        <h5>Questo percorso può continuare seguendo il: </h5>
                     </div>
                     <div class="card-body">
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
@@ -196,7 +196,7 @@
 
     <!-- Blocco percorsi suggeriti -->
     {% if recommendation_context %}
-        <div class="container py-2">
+        <div class="container py-2" id="suggest">
             <div class="card">
                 <div class="card-header">
                     <h5>Potrebbero interessarti anche</h5>
@@ -263,7 +263,7 @@
     {% endif %}
 
     <!-- Recensioni -->
-    <div class="container py-2">
+    <div class="container" id="review">
         <table class="table-sm"
                data-toggle="table"
                data-pagination="true"
@@ -366,7 +366,6 @@
                                                            onclick="return confirm('Vuoi davvero eliminare la recensione?')">
                                                             <i class="fas fa-trash-alt"></i> Elimina recensione
                                                         </a>
-
                                                     </small>
                                                 {% endif %}
                                             </div>

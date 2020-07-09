@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db import models
 from userManagement.models import Profile
@@ -24,7 +22,6 @@ class Thread(models.Model):
 
     def get_user(self):
         return self.user.user
-
 
 
 class Comment(models.Model):
