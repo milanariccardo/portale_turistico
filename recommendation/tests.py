@@ -4,9 +4,29 @@ import os
 from pathManagement.models import Path
 from recommendation.recommendation import featureStart, featureActivity, featureAudience, featureDifficulty, \
     featureWalkTime, featureKilometers, listFeature, dictionaryPathFeature, MatrixPathFeature
+from shutil import copyfile
+
+path_matrix = os.path.join(os.getcwd(), 'matrix')
+path_new_matrix = os.path.join(os.getcwd(), 'matrix_test')
+
+def copy_matrix():
+    # Ottieni matrice di similarità e copiala
+    try:
+        copyfile(path_matrix,path_new_matrix)
+    except:
+        print("Errore")
+
+def replace_matrix():
+    # Sostiuisci la matrice di similarità creata dai test con quella corretta
+    try:
+        os.remove(path_matrix)
+        os.rename(path_new_matrix, path_matrix)
+    except:
+        print("Errore")
 
 
 class TestfunctionRecommendation(TestCase):
+
 
     def setUp(self):
         """ Metodo per impostare l'ambiente in cui si svolge il test: viene creato uno percorso """
@@ -30,7 +50,7 @@ class TestfunctionRecommendation(TestCase):
 
     def testfeatureActivity(self):
         # Testing del metodo nel caso di input accettabile
-        self.assertEqual(featureActivity(self.path), [1, 0, 0, 0])
+        self.assertEqual(featureActivity(self.path), [1, 0, 0, 0, 0])
 
         # Testing del metodo nel caso di input non di tipo 'Path': stringhe, tuple
         self.assertRaises(TypeError, featureActivity, 'string')
@@ -70,7 +90,7 @@ class TestfunctionRecommendation(TestCase):
 
     def testlistFeature(self):
         # Testing del metodo nel caso di input accettabile
-        correct_list = [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0]
+        correct_list = [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0]
         self.assertEqual(listFeature(self.path), correct_list)
 
         # Testing del metodo nel caso di input non di tipo 'Path': stringhe, tuple
@@ -79,7 +99,7 @@ class TestfunctionRecommendation(TestCase):
 
     def testdictionaryPathFeature(self):
         # Testing del metodo nel caso di input accettabile
-        correct_list = [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0]
+        correct_list = [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0]
         self.assertEqual(dictionaryPathFeature(), {self.path.pk: correct_list})
 
         # Testing del metodo nel caso in cui non esiste alcun percorso nel database
@@ -160,19 +180,24 @@ class TestMatrixPathFeature(TestCase):
 
     def testMatrixPathFeatureInstance(self):
         # Test che verifica la consistenza architetturale
+
+        # Mantieni una copia della matrice di similarità
+        copy_matrix()
         self.assertTrue(isinstance(MatrixPathFeature(), MatrixPathFeature))
+        replace_matrix()
 
     def testValidMatrixPathFeature(self):
         # Test che verifica la corretta composizione della matrice matrix della classe MatrixPathFeature
-        correct_list_path1 = [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0]
-        correct_list_path2 = [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-        correct_list_path3 = [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1]
+        correct_list_path1 = [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0]
+        correct_list_path2 = [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+        correct_list_path3 = [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1]
         correct_sim_matrix = [[1, 0.3086067, 0.15430335],
                               [0.3086067, 1, 0],
                               [0.15430335, 0, 1]
                               ]
+        copy_matrix()
         self.assertTrue(numpy.array_equal(numpy.array(correct_sim_matrix).all(), MatrixPathFeature().sim.all()))
-
+        replace_matrix()
 
         # Se non ci sono percorsi nel database
         # Elimina i percorsi dal database:

@@ -9,4 +9,4 @@ Istruzioni per l'installazione:
 
 Per avviare i test eseguire:
 - "python manage.py test forum/tests/" per avviare i test relativi alle view dell'app Forum
-- "python manage.py test reccomendation/" per avviare i test relativi al sistema di reccomendation
+- "python manage.py test recomendation" per avviare i test relativi al sistema di reccomendation
