@@ -7,7 +7,17 @@ verify_ssl = true
 
 [packages]
 django = "*"
-braces = "*"
+django-braces = "*"
+django-filter = "*"
+django-filters = "*"
+django-mathfilters = "*"
+django-crispy-forms = "*"
+django-multiselectfield = "*"
+pandas = "*"
+python-dateutil = "*"
+joblib = "*"
+sklearn = "*"
+Pillow = "*"
 
 [requires]
 python_version = "3.8"
