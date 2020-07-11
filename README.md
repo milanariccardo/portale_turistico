@@ -1,5 +1,5 @@
 Istruzioni per l'installazione:
-- clonare il repository
+- estrarre l'archivio
 - entrare nella cartella del progetto
 - eseguire "pipenv install" per installare le dipendenze
 - eseguire "pipenv shell" per attivare il virtual enviroment
